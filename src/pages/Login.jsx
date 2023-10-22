@@ -13,31 +13,33 @@ import { useTheme } from "@mui/material";
 import { tokens } from '../theme';
 import { useNavigate } from 'react-router-dom';
 import Axios from 'axios';
+import { useState } from 'react';
+import Message from '../components/Message';
+import CircularProgress from '@mui/material/CircularProgress';
+import { AuthContext } from '../context/Context';
+import { useContext } from 'react';
 const defaultTheme = createTheme();
 
 export default function SignIn() {
+  const { refreshUser } = useContext(AuthContext)
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [message, setMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [openAlert, setOpenAlert] = useState(true);
   const navigate = useNavigate();
   const handleSubmit = (event) => {
+    setIsLoggedIn(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
     Axios.post('http://localhost:8008/api/auth/login', {
       email: data.get('email'),
       password: data.get('password'),
     }).then((response) => {
-      const type = response.data.type;
-      if (type === "admin") {
-        navigate('/dashboard');
-      } else if (type === "casher") {
-        navigate('/casher');
-      } else {
-        navigate('/');
-      }
+      refreshUser(response.data || null)
+      localStorage.setItem("user", JSON.stringify(response.data || null))
+      navigate('/');
     }).catch((error) => {
       console.log(error);
     })
@@ -59,7 +61,8 @@ export default function SignIn() {
             alignItems: "center",
           }}
         >
-
+          <Message message={message} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='success' />
+          <Message message={errorMessage} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='error' />
 
           <Avatar sx={{
             m: 0, bgcolor: 'secondary.main', width: '80px',
@@ -110,7 +113,7 @@ export default function SignIn() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              {isLoggedIn ? <CircularProgress color='primary' size={30} /> : 'Sign In'}
             </Button>
             <Grid container>
               <Grid item xs>

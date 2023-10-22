@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-// import { Routes, Route, useLocation } from "react-router-dom";
 import {
   createBrowserRouter,
   RouterProvider,
@@ -21,19 +20,24 @@ function App() {
 
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
+  const { currentUser } = useContext(AuthContext)
 
   const ProtectedRoute = ({ children }) => {
-    const { currentUser } = useContext(AuthContext)
 
-    if (currentUser === null) {
+    if (!currentUser) {
       return <Navigate to="/login" />
-      // return children
-
     } else {
       return children
     }
   }
+  const ProtectedRouteFromSubstore = ({ children }) => {
 
+    if (!currentUser.isSubstore) {
+      return <Navigate to="/" />
+    } else {
+      return children
+    }
+  }
 
   const Layout = () => {
     return (
@@ -70,11 +74,15 @@ function App() {
         },
         {
           path: "/substore",
-          element: <Substore />
+          element: <ProtectedRouteFromSubstore>
+            <Substore />
+          </ProtectedRouteFromSubstore>
         },
         {
           path: "/shoppendinng",
-          element: <PendingShop />
+          element: <ProtectedRouteFromSubstore>
+            <PendingShop />
+            </ProtectedRouteFromSubstore>
         },
         {
           path: "/salespendinng",

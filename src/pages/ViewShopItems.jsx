@@ -211,7 +211,7 @@ const ViewShopItems = () => {
       field: "sale",
       headerName: "Sale",
       renderCell: ({ row }) => {
-        return <button onClick={() => handleClickOpen(row)} className="btn btn-primary mx-1 ">Sale</button>;
+        return <button onClick={() => handleClickOpen(row)} className="btn btn-primary mx-1 ">sell</button>;
       },
     },
   ];
