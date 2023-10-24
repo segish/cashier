@@ -7,7 +7,7 @@ import {
 } from "react-router-dom"
 import Topbar from "./components/Topbar";
 import Sidebar from "./components/Sidebar";
-import { CssBaseline, ThemeProvider } from "@mui/material";
+import { CssBaseline, ThemeProvider, useMediaQuery } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Login from "./pages/Login";
 import Shop from "./pages/ViewShopItems";
@@ -17,7 +17,7 @@ import PendingSsale from "./pages/PendingSaleItems";
 import { AuthContext } from "./context/Context";
 
 function App() {
-
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
   const { currentUser } = useContext(AuthContext)
@@ -47,10 +47,14 @@ function App() {
           <CssBaseline />
           <div className="app">
             <Sidebar isSidebar={isSidebar} />
+            {isMobile ? <main className="content" style={{padding:0}}>
+              <Topbar setIsSidebar={setIsSidebar} />
+              <Outlet />
+            </main>:
             <main className="content">
               <Topbar setIsSidebar={setIsSidebar} />
               <Outlet />
-            </main>
+            </main>}
           </div>
         </ThemeProvider>
       </ColorModeContext.Provider>

@@ -41,7 +41,12 @@ export default function SignIn() {
       localStorage.setItem("user", JSON.stringify(response.data || null))
       navigate('/');
     }).catch((error) => {
-      console.log(error);
+      if (error.response && error.response.data) {
+        setErrorMessage(error.response.data);
+      } else {
+        setErrorMessage("An error occurred");
+      }
+      setIsLoggedIn(false)
     })
   };
 

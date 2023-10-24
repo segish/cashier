@@ -9,6 +9,7 @@ import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import LinearProgress from '@mui/material/LinearProgress';
 const ViewShopItems = () => {
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const colors = tokens(theme.palette.mode);
@@ -77,28 +78,13 @@ const ViewShopItems = () => {
         customerName: custName,
         paymentMethod: transactionType,
         amount: price,
+        phone: phone,
+        paymentDate: creditDate
       }).then((response) => {
-        setMessage("Sale Adedded to pending successfully waiting to be approved by the Admin!! " + response.data);
-        // Axios.post('/credit/add', {
-        //   amount: price,
-        //   customerName: custName,
-        //   itemCode: selectedrow.itemCode,
-        //   phone: phone,
-        //   warehouseName: selectedrow.warehouseName,
-        //   paymentDate: creditDate
-        // }).then((response) => {
-        // setRefetch(!refetch)
-        //   setIsSaled(false);
-        //   setMessage("Credit Added succesfully!!");
-        //   setOpen(false);
-        // }).catch((error) => {
-        //   if (error.response && error.response.data) {
-        //     setErrorMessage(error.response.data);
-        //   } else {
-        //     setErrorMessage("An error occurred");
-        //   }
-        //   setIsSaled(false);
-        // })
+        setOpen(false);
+        setIsSaled(false);
+        setMessage("Sale Adedded to pending successfully waiting to be approved by Admin!! " + response.data);
+        setRefetch(!refetch)
       }).catch((error) => {
         if (error.response && error.response.data) {
           setErrorMessage(error.response.data);
@@ -344,7 +330,8 @@ const ViewShopItems = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Box m="20px">
+      <Box padding={0}
+        margin={0}>
         <Header
           title="VIEW SHOP ITEMS"
         />
@@ -437,10 +424,8 @@ const ViewShopItems = () => {
             }}
             onCellClick={(params) => {
               const row = params.row;
-              if (params.field === "sale") {
-                handleClickOpen(row);
-              }
             }}
+            disableColumnFilter={isMobile}
           />
         </Box>
       </Box>

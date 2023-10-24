@@ -10,6 +10,7 @@ import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import LinearProgress from '@mui/material/LinearProgress';
 const ViewSubStoreItems = () => {
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const [open, setOpen] = React.useState(false);
   const [openMove, setOpenMove] = useState(false);
   const [openAlert, setOpenAlert] = useState(true);
@@ -44,28 +45,13 @@ const ViewSubStoreItems = () => {
         customerName: custName,
         paymentMethod: transactionType,
         amount: price,
+        phone: phone,
+        paymentDate: creditDate
       }).then((response) => {
+        setOpen(false);
+        setIsSaled(false);
         setMessage("Sale Adedded to pending successfully waiting to be approved by Admin!! " + response.data);
-        // Axios.post('/credit/add', {
-        //   amount: price,
-        //   customerName: custName,
-        //   itemCode: selectedrow.itemCode,
-        //   phone: phone,
-        //   warehouseName: selectedrow.warehouseName,
-        //   paymentDate: creditDate
-        // }).then((response) => {
-        //   window.location.reload();
-        //   setMessage("Credit Added succesfully!!");
-        //   setIsSaled(false);
-        //   setOpen(false);
-        // }).catch((error) => {
-        //   if (error.response && error.response.data) {
-        //     setErrorMessage(error.response.data);
-        //   } else {
-        //     setErrorMessage("An error occurred");
-        //   }
-        //   setIsSaled(false);
-        // })
+        setRefetch(!refetch)
       }).catch((error) => {
         if (error.response && error.response.data) {
           setErrorMessage(error.response.data);
@@ -235,7 +221,7 @@ const ViewSubStoreItems = () => {
     {
       field: "move",
       headerName: "Move",
-      flex: 1.3,
+      flex: 1,
       renderCell: ({ row }) => {
         // Render the delete button here
         return <button onClick={() => handleMoveClickOpen(row)} className="btn btn-primary mx-1 ">Move To shop</button>;
@@ -436,7 +422,8 @@ const ViewSubStoreItems = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Box m="20px">
+      <Box padding={0}
+        margin={0}>
         <Header
           title="VIEW SUB STORE ITEMS"
         />
@@ -505,15 +492,11 @@ const ViewSubStoreItems = () => {
                 style: { color: "red" },
               },
             }}
+            checkboxSelection
             onCellClick={(params) => {
               const row = params.row;
-
-              if (params.field === "move") {
-                handleMoveClickOpen(row);
-              } else if (params.field === "sale") {
-                handleClickOpen(row);
-              }
             }}
+            disableColumnFilter={isMobile}
           />
         </Box>
       </Box>

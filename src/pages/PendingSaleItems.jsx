@@ -1,4 +1,4 @@
-import { Alert, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from "@mui/material";
+import { Alert, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography, useMediaQuery } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../theme";
 import Header from "../components/Header";
@@ -10,6 +10,7 @@ import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import LinearProgress from '@mui/material/LinearProgress';
 const PendingShopItem = () => {
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const [openAlert, setOpenAlert] = useState(true);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -128,7 +129,8 @@ const PendingShopItem = () => {
   ];
   return (
     <>
-      <Box m="20px">
+      <Box padding={0}
+        margin={0}>
         <Header
           title="PENDING SALES ITEMS"
         />
@@ -246,11 +248,8 @@ const PendingShopItem = () => {
             }}
             onCellClick={(params) => {
               const row = params.row;
-
-              if (params.field === "delete") {
-                handleCancleClickOpen(row);
-              }
             }}
+            disableColumnFilter={isMobile}
           />
         </Box>
       </Box>
