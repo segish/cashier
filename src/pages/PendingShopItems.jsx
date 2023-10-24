@@ -1,4 +1,4 @@
-import { Alert, Box, IconButton } from "@mui/material";
+import { Alert, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../theme";
 import Header from "../components/Header";
@@ -18,20 +18,36 @@ const PendingShopItem = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [refetch, setRefetch] = useState(false);
+  const [isCancled, setIsCancled] = useState(false);
+  const [openCancle, setOpenCancle] = useState(false);
+  const [selectedCancleRow, setSelectedCancleRow] = useState(null);
+
+  const handleCancleClickOpen = (row) => {
+    setOpenCancle(true);
+    setSelectedCancleRow(row);
+  };
+
+  const handleCancleClose = () => {
+    setOpenCancle(false);
+    setSelectedCancleRow(null);
+  };
 
   const handleDelete = (row) => {
-    if (window.confirm('Are you sure you want to cancel this pending?')) {
-      Axios.delete(`/toshoppending/undo/${row._id}`).then((response) => {
-        setMessage("pending canceled successfully!");
-        setRefetch(!refetch)
-      }).catch((error) => {
-        if (error.response && error.response.data) {
-          setErrorMessage(error.response.data);
-        } else {
-          setErrorMessage("An error occurred");
-        }
-      })
-    }
+    setIsCancled(true);
+    Axios.delete(`/toshoppending/undo/${row._id}`).then((response) => {
+      setMessage("pending canceled successfully!");
+      setRefetch(!refetch)
+      setIsCancled(false);
+      setOpenCancle(false);
+    }).catch((error) => {
+      if (error.response && error.response.data) {
+        setErrorMessage(error.response.data);
+      } else {
+        setErrorMessage("An error occurred");
+      }
+      setIsCancled(false);
+      setOpenCancle(false);
+    })
   };
   useEffect(() => {
     setLoading(true);
@@ -106,7 +122,7 @@ const PendingShopItem = () => {
       headerName: "Delete",
       renderCell: ({ row }) => {
         // Render the delete button here
-        return <button onClick={() => handleDelete(row)} className="btn btn-danger mx-1 ">Cancel</button>;
+        return <button onClick={() => handleCancleClickOpen(row)} className="btn btn-danger mx-1 ">Cancel</button>;
       },
     },
   ];
@@ -160,6 +176,31 @@ const PendingShopItem = () => {
           </Collapse>
         </Box>}
         {loading && <LinearProgress color="secondary" />}
+        <Dialog
+          open={openCancle}
+          onClose={handleCancleClose}
+          aria-labelledby="responsive-dialog-title"
+          // maxWidth="md" // Set the desired width here
+          fullWidth
+        >
+          <DialogTitle id="delete-confirmation-dialog-title" style={{ textAlign: 'center' }}>Confirm Delete</DialogTitle>
+          <DialogTitle>
+          </DialogTitle>
+          <DialogContent style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Typography variant="body1">
+              Are you sure you want to delete this pending?
+            </Typography>
+          </DialogContent>
+          <DialogActions style={{ justifyContent: 'center' }}>
+            <Button variant="outlined" color="inherit" onClick={() => handleCancleClose()} >
+              No
+            </Button>
+            <Button variant="contained"
+              color="primary" onClick={() => handleDelete(selectedCancleRow)} disabled={isCancled}>
+              {isCancled ? <CircularProgress color="secondary" size={30} /> : 'Yes'}
+            </Button>
+          </DialogActions>
+        </Dialog>
         <Box
           m="40px 0 0 0"
           height="75vh"
@@ -207,7 +248,7 @@ const PendingShopItem = () => {
               const row = params.row;
 
               if (params.field === "delete") {
-                handleDelete(row);
+                handleCancleClickOpen(row);
               }
             }}
           />
