@@ -1,21 +1,36 @@
-import { Alert, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, IconButton, InputLabel, MenuItem, Select, TextField, useMediaQuery } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, IconButton, InputLabel, MenuItem, Select, TextField, useMediaQuery } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../theme";
 import Header from "../components/Header";
 import { useTheme } from "@mui/material";
 import Axios from 'axios';
 import { useEffect, useState } from "react";
-import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import LinearProgress from '@mui/material/LinearProgress';
+import CircularProgress from '@mui/material/CircularProgress';
+import Message from "../components/Message";
+import { styled } from '@mui/material/styles';
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialogContent-root': {
+    padding: theme.spacing(2),
+  },
+  '& .MuiDialogActions-root': {
+    padding: theme.spacing(1),
+  },
+  '& .MuiDialog-paper': {
+    width: '100%', // Adjust the width as needed
+  },
+}));
 const ViewShopItems = () => {
-  const isMobile = useMediaQuery('(max-width: 768px)');
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const colors = tokens(theme.palette.mode);
+  // dialog
   const [open, setOpen] = useState(false);
   const [openAlert, setOpenAlert] = useState(true);
   const [loading, setLoading] = useState(true);
+  //dialog
+
+  //input data
   const [custName, setCustName] = useState('');
   const [quantity, setQuantity] = useState('');
   const [price, setPrice] = useState('');
@@ -27,35 +42,30 @@ const ViewShopItems = () => {
   const [credit, setCredit] = useState(false);
   const [transfer, setTransfer] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-  const [refetch, setRefetch] = useState(false);
+  //input data
 
   //warehouse  and shope
   const [shopeItems, setShopItems] = useState([]);
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isSaled, setIsSaled] = useState(false);
+  const [reload, setReload] = useState(false);
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   //transaction type
   const handleTransactionType = (value) => {
-    console.log('value' + value);
     if (value === "transfer") {
       setTransfer(true);
       setCredit(false);
       setTransactionType(value);
-      console.log('from transfer');
-      console.log(transactionType);
     } else if (value === 'credit') {
       setCredit(true);
       setTransfer(false);
       setTransactionType(value);
-      console.log('from credit');
-      console.log(transactionType);
     } else {
       setTransactionType(value);
       setTransfer(false);
       setCredit(false);
-      console.log('from cash');
-      console.log(transactionType);
     }
   }
   // popup related
@@ -70,6 +80,15 @@ const ViewShopItems = () => {
 
   //popup related
 
+  const saleResetForm = () => {
+    setCustName('');
+    setPrice('');
+    setQuantity('');
+    setTransactionType('');
+    setErrorMessage('');
+    setTransfer(false);
+    setCredit(false);
+  };
   const handleSale = (selectedrow) => {
     setIsSaled(true);
     if (transactionType === 'credit') {
@@ -81,10 +100,17 @@ const ViewShopItems = () => {
         phone: phone,
         paymentDate: creditDate
       }).then((response) => {
-        setOpen(false);
+        setMessage(`${quantity}  ${selectedrow.name} Sale Adedded to pending successfully waiting to be approved by Admin!!`);
         setIsSaled(false);
-        setMessage("Sale Adedded to pending successfully waiting to be approved by Admin!! " + response.data);
-        setRefetch(!refetch)
+        setOpen(false);
+        setCustName('');
+        setPrice('');
+        setQuantity('');
+        setTransfer(false);
+        setCredit(false);
+        setTransactionType('');
+        setErrorMessage('');
+        setReload(!reload);
       }).catch((error) => {
         if (error.response && error.response.data) {
           setErrorMessage(error.response.data);
@@ -96,14 +122,20 @@ const ViewShopItems = () => {
     } else if (transactionType === 'transfer') {
       Axios.post(`/Shop/transaction/${selectedrow._id}`, {
         quantity: quantity,
-        amount: price,
         customerName: custName,
         paymentMethod: `${transactionType}(Bank Name: ${bankName}, Account Number: ${accountNumber})`,
       }).then((response) => {
-        setRefetch(!refetch)
         setOpen(false);
         setIsSaled(false);
         setMessage("Sale Adedded to pending successfully waiting to be approved by the Admin!! ");
+        setCustName('');
+        setPrice('');
+        setQuantity('');
+        setTransfer(false);
+        setCredit(false);
+        setTransactionType('');
+        setErrorMessage('');
+        setReload(!reload);
       }).catch((error) => {
         if (error.response && error.response.data) {
           setErrorMessage(error.response.data);
@@ -115,14 +147,20 @@ const ViewShopItems = () => {
     } else {
       Axios.post(`/Shop/transaction/${selectedrow._id}`, {
         quantity: quantity,
-        amount: price,
         customerName: custName,
         paymentMethod: transactionType,
       }).then((response) => {
-        setRefetch(!refetch)
         setOpen(false);
         setIsSaled(false);
-        setMessage("Sale Adedded to pending successfully waiting to be approved by the Admin!! " + response.data);
+        setMessage(`${quantity}  ${selectedrow.name} Sale Adedded to pending successfully waiting to be approved by the Admin!! `);
+        setCustName('');
+        setPrice('');
+        setQuantity('');
+        setTransfer(false);
+        setCredit(false);
+        setTransactionType('');
+        setErrorMessage('');
+        setReload(!reload);
       }).catch((error) => {
         if (error.response && error.response.data) {
           setErrorMessage(error.response.data);
@@ -134,7 +172,6 @@ const ViewShopItems = () => {
     }
   }
   useEffect(() => {
-    setLoading(true);
     Axios.get('/Shop/getall').then((response) => {
       setShopItems(response.data);
       setLoading(false);
@@ -146,7 +183,7 @@ const ViewShopItems = () => {
       }
       setLoading(false);
     })
-  }, [refetch]);
+  }, [reload]);
   const getRowId = (row) => {
     return row._id;
   };
@@ -197,97 +234,94 @@ const ViewShopItems = () => {
       field: "sale",
       headerName: "Sale",
       renderCell: ({ row }) => {
-        return <button onClick={() => handleClickOpen(row)} className="btn btn-primary mx-1 ">sell</button>;
+        // Render the delete button here
+        return <button onClick={() => handleClickOpen(row)} className="btn btn-primary mx-1 ">Sale</button>;
       },
     },
   ];
   return (
     <>
-      <Dialog
-        fullScreen={fullScreen}
+      <BootstrapDialog
         open={open}
         onClose={handleClose}
-        aria-labelledby="responsive-dialog-title"
+        aria-labelledby="costomized-dialog-title"
       >
         <DialogTitle
-          id="responsive-dialog-title"
-          style={{ textAlign: 'center' }}
+          id="costomized-dialog-title"
         >
-          Fill the information below
+          Sale Shop Items
         </DialogTitle>
-        <DialogTitle>
-          {errorMessage && <Box sx={{ width: '100%' }}>
-            <Collapse in={openAlert}>
-              <Alert
-                severity="error"
-                action={
-                  <IconButton
-                    aria-label="close"
-                    color="warning"
-                    size="small"
-                    onClick={() => {
-                      setOpenAlert(false);
-                    }}
-                  >
-                    <CloseIcon fontSize="inherit" />
-                  </IconButton>
-                }
-                sx={{ mb: 2 }}
-              >
-                {errorMessage}
-              </Alert>
-            </Collapse>
-          </Box>}
-        </DialogTitle>
-        <DialogContent>
+        <IconButton
+          aria-label="close"
+          onClick={() => { handleClose(); saleResetForm() }}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        {errorMessage && <DialogTitle>
+          <Message message={errorMessage} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='error' />
+        </DialogTitle>}
+        <DialogContent dividers>
           <TextField
+            required
             label="Customer Name"
             value={custName}
             onChange={(e) => setCustName(e.target.value)}
             fullWidth
             margin="normal"
           />
-          {!credit && <TextField
+          <TextField
+            required
+            type="number"
             label="Quantity"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
             fullWidth
             margin="normal"
-          />}
+          />
           <TextField
+            required
             label="Price"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             fullWidth
             margin="normal"
           />
-          <FormControl sx={{ gridColumn: "span 4" }} fullWidth>
-            <InputLabel id="demo-simple-select-helper-label">Transaction Type</InputLabel>
+          <FormControl
+            fullWidth
+            sx={{ gridColumn: "span 4" }}>
+            <InputLabel id="demo-simple-select-helper-label">Select Transaction Type</InputLabel>
             <Select
-              sx={{ gridColumn: "span 4" }}
+              required
               label="Transaction Type"
               value={transactionType}
               onChange={(e) => handleTransactionType(e.target.value)}
               fullWidth
               margin="normal"
             >
-              <MenuItem value="">Select Transaction Type</MenuItem>
               <MenuItem value="transfer">Transfer</MenuItem>
               <MenuItem value="cash">Cash</MenuItem>
               <MenuItem value="credit">Credit</MenuItem>
             </Select>
           </FormControl>
           {transfer &&
-            <FormControl sx={{ gridColumn: "span 4" }} fullWidth>
-              <InputLabel id="demo-simple-select-helper-label">Bank Name</InputLabel>
+            <FormControl
+              fullWidth
+              sx={{ gridColumn: "span 4" }}>
+              <InputLabel id="demo-simple-select-helper-label">Select Bank Name</InputLabel>
               <Select
+                required
                 label="Bank Name"
                 value={bankName}
                 onChange={(e) => setBankName(e.target.value)}
                 fullWidth
                 margin="normal"
               >
-                <MenuItem value="">Select Bank Name</MenuItem>
                 <MenuItem value="cbe">CBE</MenuItem>
                 <MenuItem value="awash">Awash</MenuItem>
                 <MenuItem value="abay">Abay</MenuItem>
@@ -295,6 +329,7 @@ const ViewShopItems = () => {
             </FormControl>
           }
           {transfer && <TextField
+            required
             label="Account Number"
             value={accountNumber}
             onChange={(e) => setAccountNumber(e.target.value)}
@@ -302,6 +337,7 @@ const ViewShopItems = () => {
             margin="normal"
           />}
           {credit && <TextField
+            required
             label="phone Number"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
@@ -310,6 +346,7 @@ const ViewShopItems = () => {
           />}
           {
             credit && <TextField
+              required
               label="Payment Date"
               type="date"
               value={creditDate}
@@ -322,65 +359,23 @@ const ViewShopItems = () => {
           }
         </DialogContent>
         <DialogActions>
-          <Button style={{ color: 'white' }} onClick={handleClose}>
-            Cancel
-          </Button>
           <Button style={{ color: 'white' }} onClick={() => handleSale(selectedRow)} disabled={isSaled}>
             {isSaled ? <CircularProgress color="secondary" size={30} /> : 'Sale'}
           </Button>
         </DialogActions>
-      </Dialog>
-      <Box padding={0}
-        margin={0}>
+      </BootstrapDialog>
+      <Box
+        margin={0}
+        padding={0}
+      >
         <Header
-          title="VIEW SHOP ITEMS"
+          title="SHOP ITEMS"
         />
-        {errorMessage && <Box sx={{ width: '100%' }}>
-          <Collapse in={openAlert}>
-            <Alert
-              severity="error"
-              action={
-                <IconButton
-                  aria-label="close"
-                  color="warning"
-                  size="small"
-                  onClick={() => {
-                    setOpenAlert(false);
-                  }}
-                >
-                  <CloseIcon fontSize="inherit" />
-                </IconButton>
-              }
-              sx={{ mb: 2 }}
-            >
-              {errorMessage}
-            </Alert>
-          </Collapse>
-        </Box>}
-        {message && <Box sx={{ width: '100%' }}>
-          <Collapse in={openAlert}>
-            <Alert
-              action={
-                <IconButton
-                  aria-label="close"
-                  color="inherit"
-                  size="small"
-                  onClick={() => {
-                    setOpenAlert(false);
-                  }}
-                >
-                  <CloseIcon fontSize="inherit" />
-                </IconButton>
-              }
-              sx={{ mb: 2 }}
-            >
-              {message}
-            </Alert>
-          </Collapse>
-        </Box>}
+        <Message message={message} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='success' />
+        <Message message={errorMessage} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='error' />
         {loading && <LinearProgress color="secondary" />}
         <Box
-          m="40px 0 0 0"
+          margin={0}
           height="75vh"
           sx={{
             "& .MuiDataGrid-root": {
@@ -421,9 +416,6 @@ const ViewShopItems = () => {
                 showQuickFilter: true,
                 style: { color: "red" },
               },
-            }}
-            onCellClick={(params) => {
-              const row = params.row;
             }}
             disableColumnFilter={isMobile}
           />

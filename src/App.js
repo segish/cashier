@@ -11,6 +11,7 @@ import { CssBaseline, ThemeProvider, useMediaQuery } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Login from "./pages/Login";
 import Shop from "./pages/ViewShopItems";
+import ChangePss from "./pages/ChangePassword";
 import Substore from "./pages/ViewSubStores";
 import PendingShop from "./pages/PendingShopItems";
 import PendingSsale from "./pages/PendingSaleItems";
@@ -47,14 +48,14 @@ function App() {
           <CssBaseline />
           <div className="app">
             <Sidebar isSidebar={isSidebar} />
-            {isMobile ? <main className="content" style={{padding:0}}>
+            {isMobile ? <main className="content" style={{ padding: 0 }}>
               <Topbar setIsSidebar={setIsSidebar} />
               <Outlet />
-            </main>:
-            <main className="content">
-              <Topbar setIsSidebar={setIsSidebar} />
-              <Outlet />
-            </main>}
+            </main> :
+              <main className="content">
+                <Topbar setIsSidebar={setIsSidebar} />
+                <Outlet />
+              </main>}
           </div>
         </ThemeProvider>
       </ColorModeContext.Provider>
@@ -86,11 +87,15 @@ function App() {
           path: "/shoppendinng",
           element: <ProtectedRouteFromSubstore>
             <PendingShop />
-            </ProtectedRouteFromSubstore>
+          </ProtectedRouteFromSubstore>
         },
         {
           path: "/salespendinng",
           element: <PendingSsale />
+        },
+        {
+          path: "/change-password",
+          element: <ChangePss />
         },
       ]
     },

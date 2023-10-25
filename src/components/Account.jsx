@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import { Avatar, Skeleton, useTheme } from "@mui/material";
 import Axios from 'axios';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { Link } from 'react-router-dom';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
     padding: theme.spacing(2),
@@ -146,6 +147,12 @@ const Account = ({ fullScreen, open, handleClose }) => {
           color="primary" onClick={() => handleUpload()}>
           Cahnge Profile
         </Button>}
+        <Link to="/change-password" >
+        <Button variant="contained"
+            color="primary" onClick={handleClose}>
+          Cahnge password
+        </Button>
+        </Link>
       </DialogActions>
     </BootstrapDialog>
 
