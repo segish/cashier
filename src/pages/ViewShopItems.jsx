@@ -122,6 +122,7 @@ const ViewShopItems = () => {
     } else if (transactionType === 'transfer') {
       Axios.post(`/Shop/transaction/${selectedrow._id}`, {
         quantity: quantity,
+        amount: price,
         customerName: custName,
         paymentMethod: `${transactionType}(Bank Name: ${bankName}, Account Number: ${accountNumber})`,
       }).then((response) => {
@@ -147,6 +148,7 @@ const ViewShopItems = () => {
     } else {
       Axios.post(`/Shop/transaction/${selectedrow._id}`, {
         quantity: quantity,
+        amount: price,
         customerName: custName,
         paymentMethod: transactionType,
       }).then((response) => {

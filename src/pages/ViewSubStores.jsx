@@ -84,6 +84,7 @@ const ViewSubStoreItems = () => {
     } else if (transactionType === 'transfer') {
       Axios.post(`/Substore/holesall/${selectedrow._id}`, {
         quantity: quantity,
+        amount: price,
         customerName: custName,
         paymentMethod: `${transactionType}(Bank Name: ${bankName}, Account Number: ${accountNumber})`,
       }).then((response) => {
@@ -109,6 +110,7 @@ const ViewSubStoreItems = () => {
     } else {
       Axios.post(`/Substore/holesall/${selectedrow._id}`, {
         quantity: quantity,
+        amount: price,
         customerName: custName,
         paymentMethod: transactionType,
       }).then((response) => {
