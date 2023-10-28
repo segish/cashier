@@ -223,12 +223,6 @@ const ViewSubStoreItems = () => {
   };
   const columns = [
     {
-      field: "warehouseName",
-      headerName: "Warehouse Name",
-      width: 120,
-      cellClassName: "name-column--cell",
-    },
-    {
       field: "name",
       headerName: "Item Name",
       width: 120,

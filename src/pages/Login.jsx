@@ -33,7 +33,7 @@ export default function SignIn() {
     setIsLoggedIn(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    Axios.post('http://5.75.187.236/api/auth/login', {
+    Axios.post('http://localhost:8008/api/auth/login', {
       email: data.get('email'),
       password: data.get('password'),
     }).then((response) => {
@@ -52,7 +52,7 @@ export default function SignIn() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" className='content'>
         <CssBaseline />
         <Box
           sx={{
