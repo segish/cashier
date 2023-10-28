@@ -70,13 +70,6 @@ const PendingShopItem = () => {
   };
   const columns = [
     {
-      field: "name",
-      headerName: "Item Name",
-      width:isMobile&& 120,
-      flex:!isMobile&&1,
-      cellClassName: "name-column--cell",
-    },
-    {
       field: "itemCode",
       headerName: "Item Code",
       width:isMobile&& 120,
@@ -84,8 +77,8 @@ const PendingShopItem = () => {
       cellClassName: "name-column--cell",
     },
     {
-      field: "specification",
-      headerName: "Specification",
+      field: "name",
+      headerName: "Item Name",
       width:isMobile&& 120,
       flex:!isMobile&&1,
       cellClassName: "name-column--cell",
@@ -93,6 +86,13 @@ const PendingShopItem = () => {
     {
       field: "type",
       headerName: "Item Type",
+      width:isMobile&& 120,
+      flex:!isMobile&&1,
+      cellClassName: "name-column--cell",
+    },
+    {
+      field: "specification",
+      headerName: "Specification",
       width:isMobile&& 120,
       flex:!isMobile&&1,
       cellClassName: "name-column--cell",

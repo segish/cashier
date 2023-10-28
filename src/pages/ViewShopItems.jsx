@@ -191,13 +191,6 @@ const ViewShopItems = () => {
   };
   const columns = [
     {
-      field: "name",
-      headerName: "Item Name",
-      width:isMobile&& 120,
-      flex:!isMobile&&1,
-      cellClassName: "name-column--cell",
-    },
-    {
       field: "itemCode",
       headerName: "Item Code",
       width:isMobile&& 120,
@@ -205,8 +198,8 @@ const ViewShopItems = () => {
       cellClassName: "name-column--cell",
     },
     {
-      field: "specification",
-      headerName: "Item Specification",
+      field: "name",
+      headerName: "Item Name",
       width:isMobile&& 120,
       flex:!isMobile&&1,
       cellClassName: "name-column--cell",
@@ -214,6 +207,13 @@ const ViewShopItems = () => {
     {
       field: "type",
       headerName: "Item Type",
+      width:isMobile&& 120,
+      flex:!isMobile&&1,
+      cellClassName: "name-column--cell",
+    },
+    {
+      field: "specification",
+      headerName: "Item Specification",
       width:isMobile&& 120,
       flex:!isMobile&&1,
       cellClassName: "name-column--cell",
