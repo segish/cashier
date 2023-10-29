@@ -6,7 +6,8 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { useTheme } from "@mui/material";
+import InputAdornment from '@mui/material/InputAdornment';
+import { FormControl, IconButton, InputLabel, OutlinedInput, useTheme } from "@mui/material";
 import { tokens } from '../theme';
 import { useNavigate } from 'react-router-dom';
 import Axios from 'axios';
@@ -15,29 +16,35 @@ import Message from '../components/Message';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useContext } from 'react';
 import { AuthContext } from '../context/Context';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 export default function ChangePassword() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [openAlert, setOpenAlert] = useState(true);
   const navigate = useNavigate();
-  const { currentUser,refreshUser } = useContext(AuthContext)
+  const { currentUser, refreshUser } = useContext(AuthContext)
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [shownewPassword, setShownewPassword] = React.useState(false);
+  const [showconfPassword, setShowconfPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleSubmit = (event) => {
+    setErrorMessage(null)
     setIsLoggedIn(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      oldPassword: data.get('oldpassword'),
-      newPassword: data.get('newpassword'),
-    });
+    if (data.get('newpassword') !== data.get('confirm_password')) {
+      setIsLoggedIn(false);
+      setErrorMessage("please confirm password")
+      return
+    }
     Axios.post('/auth/pwdchange/' + currentUser._id, {
       oldPassword: data.get('oldpassword'),
       newPassword: data.get('newpassword'),
     }).then((response) => {
-      // setMessage("You are logged in successfully!!")
       setIsLoggedIn(false);
       refreshUser(null)
       navigate('/');
@@ -66,7 +73,7 @@ export default function ChangePassword() {
           backgroundColor: `${colors.primary[400]}`
         }}
       >
-        <Message message={message} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='success' />
+        {/* <Message message={message} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='success' /> */}
         <Message message={errorMessage} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='error' />
 
         <Avatar sx={{
@@ -89,30 +96,78 @@ export default function ChangePassword() {
           Enter the credentials below to change your password
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
+          <FormControl sx={{mt:1.5}} fullWidth>
+            <InputLabel>Enter Old Password</InputLabel>
+            <OutlinedInput
             margin="normal"
             required
             fullWidth
             name="oldpassword"
             label="Enter Old Password"
-            type="password"
+              type={showPassword ? "text" : "password"}
             id="password"
-            autoComplete="current-password"
+              autoComplete="current-password"
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
           />
-          <TextField
+          </FormControl>
+          <FormControl sx={{mt:1.5}} fullWidth>
+            <InputLabel>Enter New Password</InputLabel>
+            <OutlinedInput
+              margin="normal"
+              required
+              fullWidth
+              name="newpassword"
+              label="Enter New Password"
+              type={shownewPassword ? "text" : "password"}
+              id="password"
+              autoComplete="current-password"
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShownewPassword(!shownewPassword)}
+                    edge="end"
+                  >
+                    {shownewPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+          </FormControl>
+          <FormControl sx={{ mt: 1.5 }} fullWidth>
+            <InputLabel>Enter Old Password</InputLabel>
+            <OutlinedInput
             margin="normal"
             required
             fullWidth
-            name="newpassword"
-            label="Enter New Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
+            name="confirm_password"
+            label="Re Enter New Password"
+              type={showconfPassword ? "text" : "password"}
+            id="confirm password"
+              autoComplete="current-password"
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowconfPassword(!showconfPassword)}
+                    edge="end"
+                  >
+                    {showconfPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
           />
-          {/* <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            /> */}
+          </FormControl>
           <Button
             type="submit"
             fullWidth

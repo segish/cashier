@@ -9,7 +9,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useTheme } from "@mui/material";
+import { FilledInput, FormControl, IconButton, Input, InputAdornment, InputLabel, OutlinedInput, useTheme } from "@mui/material";
 import { tokens } from '../theme';
 import { useNavigate } from 'react-router-dom';
 import Axios from 'axios';
@@ -18,22 +18,26 @@ import Message from '../components/Message';
 import CircularProgress from '@mui/material/CircularProgress';
 import { AuthContext } from '../context/Context';
 import { useContext } from 'react';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 const defaultTheme = createTheme();
 
 export default function SignIn() {
   const { refreshUser } = useContext(AuthContext)
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [openAlert, setOpenAlert] = useState(true);
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleSubmit = (event) => {
+    setErrorMessage(null);
     setIsLoggedIn(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    Axios.post('http://5.75.187.236/api/auth/login', {
+    Axios.post('/auth/login', {
       email: data.get('email'),
       password: data.get('password'),
     }).then((response) => {
@@ -66,7 +70,7 @@ export default function SignIn() {
             alignItems: "center",
           }}
         >
-          <Message message={message} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='success' />
+          {/* <Message message={message} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='success' /> */}
           <Message message={errorMessage} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='error' />
 
           <Avatar sx={{
@@ -83,9 +87,8 @@ export default function SignIn() {
           </Avatar>
           <Typography mt={5} variant="h6" color={colors.grey[300]}
             sx={{
-              fontSize: 14,
-            }}>
-            Enter your credentials below
+              fontSize: 20,
+            }}>Cashier Login
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -98,37 +101,42 @@ export default function SignIn() {
               autoComplete="email"
               autoFocus
             />
-            <TextField
+            <FormControl fullWidth>
+              <InputLabel>Password</InputLabel>
+            <OutlinedInput
               margin="normal"
               required
               fullWidth
               name="password"
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               autoComplete="current-password"
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
             />
-            {/* <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            /> */}
+            </FormControl>
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              {isLoggedIn ? <CircularProgress color='primary' size={30} /> : 'Sign In'}
+              {isLoggedIn ? (<span style={{display:"flex"}}>please wait... <CircularProgress color='primary' size={30} /></span>) : 'Sign In'}
             </Button>
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
                   Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
             </Grid>

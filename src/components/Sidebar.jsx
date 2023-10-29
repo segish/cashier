@@ -84,7 +84,6 @@ const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
   const [username, setUserName] = useState('');
-  const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
   const [shop, setShop] = useState('');
   const [profile, setProfile] = useState(`../../assets/user.png`);
@@ -99,9 +98,8 @@ const Sidebar = () => {
       withCredentials: true,
     }).then((response) => {
       setUserName(response.data.adminName);
-      setEmail(response.data.email);
       setRole(response.data.type); 
-      setProfile(response.data.profile)
+      setProfile('../../assets/user.png')
       setShop(response.data.warehouseName)
       setProfilLoding(false)
     }).catch((error) => {
@@ -183,7 +181,7 @@ const Sidebar = () => {
 
               >
                 <Typography variant="h3" color={colors.grey[100]}>
-                  SMS
+                  STMS
                 </Typography>
                 <IconButton onClick={() => handleCollapse()}>
                   <MenuOutlinedIcon />
