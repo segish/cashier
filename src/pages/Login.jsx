@@ -19,6 +19,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { AuthContext } from '../context/Context';
 import { useContext } from 'react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useEffect } from 'react';
 const defaultTheme = createTheme();
 
 export default function SignIn() {
