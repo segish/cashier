@@ -8,8 +8,6 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import { MenuItem } from 'react-pro-sidebar';
 import { Logout, Person, PersonAdd, Settings } from '@mui/icons-material';
 import axios from 'axios';
-import Axios from 'axios';
-import { useEffect, useState } from "react";
 import { Link, Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/Context';
 import Account from './Account';
@@ -78,26 +76,9 @@ const Topbar = () => {
     }
   }
   const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const colorMode = useContext(ColorModeContext);
-  const [notifications, setNotifiCations] = useState([]);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [count, setCount] = useState(0);
 
-  useEffect(() => {
-    Axios.get('/toshoppending/getall').then((response) => {
-      setNotifiCations(response.data);
-      setCount(response.data.length);
-      console.log('count' + count);
-    }).catch((error) => {
-      if (error.response && error.response.data) {
-        setErrorMessage(error.response.data);
-      } else {
-        setErrorMessage("An error occurred");
-      }
-    })
-  }, []);
   return (
     <Box display="flex" justifyContent="end" p={2}>
 

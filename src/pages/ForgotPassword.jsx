@@ -53,10 +53,6 @@ export default function ForgotPassword() {
     setIsLoggedIn(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
     Axios.post('/auth/login', {
         email: data.get('email'),
         password: data.get('password'),

@@ -136,25 +136,18 @@ const ViewSubStoreItems = () => {
     }
   }
   const handleTransactionType = (value) => {
-    console.log('value' + value);
     if (value === "transfer") {
       setTransfer(true);
       setCredit(false);
       setTransactionType(value);
-      console.log('from transfer');
-      console.log(transactionType);
     } else if (value === 'credit') {
       setCredit(true);
       setTransfer(false);
       setTransactionType(value);
-      console.log('from credit');
-      console.log(transactionType);
     } else {
       setTransactionType(value);
       setTransfer(false);
       setCredit(false);
-      console.log('from cash');
-      console.log(transactionType);
     }
   }
   const resetForm = () => {

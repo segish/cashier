@@ -22,7 +22,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-  const { refreshUser } = useContext(AuthContext)
+  const { refreshUser, currentUser } = useContext(AuthContext)
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [errorMessage, setErrorMessage] = useState('');
@@ -52,7 +52,13 @@ export default function SignIn() {
       }
       setIsLoggedIn(false)
     })
-  };
+  }; 
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/")
+    }
+  }
+  )
 
   return (
     <ThemeProvider theme={defaultTheme}>
