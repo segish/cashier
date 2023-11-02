@@ -420,6 +420,8 @@ const ViewShopItems = () => {
               },
             }}
             disableColumnFilter={isMobile}
+            disableDensitySelector={isMobile}
+            disableColumnSelector={isMobile}
           />
         </Box>
       </Box>

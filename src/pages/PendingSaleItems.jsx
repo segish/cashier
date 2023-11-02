@@ -258,6 +258,8 @@ const PendingShopItem = () => {
               const row = params.row;
             }}
             disableColumnFilter={isMobile}
+            disableDensitySelector={isMobile}
+            disableColumnSelector={isMobile}
           />
         </Box>
       </Box>

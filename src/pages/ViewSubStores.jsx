@@ -503,6 +503,8 @@ const ViewSubStoreItems = () => {
               },
             }}
             disableColumnFilter={isMobile}
+            disableDensitySelector={isMobile}
+            disableColumnSelector={isMobile}
           />
         </Box>
       </Box>
