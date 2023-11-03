@@ -80,6 +80,13 @@ const PendingShopItem = () => {
             flex: !isMobile && 1,
             cellClassName: "name-column--cell",
         },
+        {
+            field: "cheque",
+            headerName: "cheque number",
+            width: isMobile && 120,
+            flex: !isMobile && 1,
+            cellClassName: "name-column--cell",
+        },
     ];
     return (
         <>

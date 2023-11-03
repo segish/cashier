@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, IconButton, InputLabel, MenuItem, Select, TextField, useMediaQuery } from "@mui/material";
+import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, IconButton, InputLabel, MenuItem, Select, TextField, useMediaQuery } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../theme";
 import Header from "../components/Header";
@@ -41,6 +41,7 @@ const ViewShopItems = () => {
   const [creditDate, setCreditDate] = useState('');
   const [credit, setCredit] = useState(false);
   const [transfer, setTransfer] = useState(false);
+  const [chequeNumber, setChequeNumber] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   //input data
 
@@ -50,7 +51,12 @@ const ViewShopItems = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isSaled, setIsSaled] = useState(false);
   const [reload, setReload] = useState(false);
+  const [checked, setChecked] = useState(false);
   const isMobile = useMediaQuery('(max-width: 768px)');
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+  };
 
   //transaction type
   const handleTransactionType = (value) => {
@@ -98,7 +104,8 @@ const ViewShopItems = () => {
         paymentMethod: transactionType,
         amount: price,
         phone: phone,
-        paymentDate: creditDate
+        paymentDate: creditDate,
+        cheque: chequeNumber,
       }).then((response) => {
         setMessage(`${quantity}  ${selectedrow.name} Sale Adedded to pending successfully waiting to be approved by Admin!!`);
         setIsSaled(false);
@@ -337,6 +344,16 @@ const ViewShopItems = () => {
             onChange={(e) => setAccountNumber(e.target.value)}
             fullWidth
             margin="normal"
+          />}
+          {credit && <FormControlLabel required control={<Checkbox onChange={handleChange} />} label="Have Check Book?" />}
+          {credit && checked && <TextField
+            required
+            label="Enter Check Number"
+            value={chequeNumber}
+            onChange={(e) => setChequeNumber(e.target.value)}
+            fullWidth
+            margin="normal"
+            type="number"
           />}
           {credit && <TextField
             required

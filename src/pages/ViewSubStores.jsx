@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, IconButton, InputLabel, MenuItem, Select, TextField, useMediaQuery } from "@mui/material";
+import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, IconButton, InputLabel, MenuItem, Select, TextField, useMediaQuery } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../theme";
 import Header from "../components/Header";
@@ -41,6 +41,8 @@ const ViewSubStoreItems = () => {
   const [credit, setCredit] = useState(false);
   const [transfer, setTransfer] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [checked, setChecked] = useState(false);
+  const [chequeNumber, setChequeNumber] = useState(null);
   const [selectedMoveRow, setSelectedMoveRow] = useState(null);
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -49,6 +51,11 @@ const ViewSubStoreItems = () => {
   const [isMoved, setIsMoved] = useState(false);
   const [reload, setReload] = useState(false);
   const isMobile = useMediaQuery('(max-width: 768px)');
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked)
+    setChequeNumber(null);
+  };
 
   const handleSale = (selectedrow) => {
     setIsSaled(true);
@@ -60,9 +67,10 @@ const ViewSubStoreItems = () => {
         paymentMethod: transactionType,
         amount: price,
         phone: phone,
-        paymentDate: creditDate
+        paymentDate: creditDate,
+        cheque: chequeNumber,
       }).then((response) => {
-        setMessage("Sale Adedded to pending successfully waiting to be approved by Admin!! " + response.data);
+        setMessage("Sale Adedded to pending successfully waiting to be approved by Admin!! ");
         setIsSaled(false);
         setOpen(false);
         setCustName('');
@@ -218,43 +226,43 @@ const ViewSubStoreItems = () => {
     {
       field: "itemCode",
       headerName: "Item Code",
-      width:isMobile&& 120,
-      flex:!isMobile&&1,
+      width: isMobile && 120,
+      flex: !isMobile && 1,
       cellClassName: "name-column--cell",
     },
     {
       field: "name",
       headerName: "Item Name",
-      width:isMobile&& 120,
-      flex:!isMobile&&1,
+      width: isMobile && 120,
+      flex: !isMobile && 1,
       cellClassName: "name-column--cell",
     },
     {
       field: "type",
       headerName: "Item Type",
-      width:isMobile&& 120,
-      flex:!isMobile&&1,
+      width: isMobile && 120,
+      flex: !isMobile && 1,
       cellClassName: "name-column--cell",
     },
     {
       field: "specification",
       headerName: "Item Specification",
-      width:isMobile&& 120,
-      flex:!isMobile&&1,
+      width: isMobile && 120,
+      flex: !isMobile && 1,
       cellClassName: "name-column--cell",
     },
     {
       field: "expireDate",
       headerName: "Expire Date",
-      width:isMobile&& 120,
-      flex:!isMobile&&1,
+      width: isMobile && 120,
+      flex: !isMobile && 1,
       cellClassName: "name-column--cell",
     },
     {
       field: "quantity",
       headerName: "Quantity",
-      width:isMobile&& 120,
-      flex:!isMobile&&1,
+      width: isMobile && 120,
+      flex: !isMobile && 1,
       cellClassName: "name-column--cell",
     },
     {
@@ -420,6 +428,16 @@ const ViewSubStoreItems = () => {
             onChange={(e) => setAccountNumber(e.target.value)}
             fullWidth
             margin="normal"
+          />}
+          {credit && <FormControlLabel required control={<Checkbox onChange={handleChange} />} label="Have Cheque Book?" />}
+          {credit && checked && <TextField
+            required
+            label="Enter Check Number"
+            value={chequeNumber}
+            onChange={(e) => setChequeNumber(e.target.value)}
+            fullWidth
+            margin="normal"
+            type="number"
           />}
           {credit && <TextField
             required
