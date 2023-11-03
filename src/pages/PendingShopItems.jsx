@@ -254,9 +254,6 @@ const PendingShopItem = () => {
                 style: { color: "red" },
               },
             }}
-            onCellClick={(params) => {
-              const row = params.row;
-            }}
             disableColumnFilter={isMobile}
             disableDensitySelector={isMobile}
             disableColumnSelector={isMobile}

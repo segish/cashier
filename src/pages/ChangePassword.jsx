@@ -2,7 +2,6 @@ import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -29,8 +28,6 @@ export default function ChangePassword() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [shownewPassword, setShownewPassword] = React.useState(false);
   const [showconfPassword, setShowconfPassword] = React.useState(false);
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleSubmit = (event) => {
     setErrorMessage(null)
     setIsLoggedIn(true);

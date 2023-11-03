@@ -1,34 +1,16 @@
 import * as React from 'react';
-import { Avatar, Box, Divider, IconButton, ListItemIcon, Menu, Tooltip, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Divider, IconButton, ListItemIcon, Menu, Tooltip, useMediaQuery, useTheme } from "@mui/material";
 import { useContext } from "react";
-import { ColorModeContext, tokens } from "../theme";
+import { ColorModeContext } from "../theme";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import { MenuItem } from 'react-pro-sidebar';
-import { Logout, Person, PersonAdd, Settings } from '@mui/icons-material';
+import { Logout, Person, Settings } from '@mui/icons-material';
 import axios from 'axios';
 import { Link, Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/Context';
 import Account from './Account';
-const styles = {
-  notification: {
-    padding: '10px',
-    borderRadius: '5px',
-    cursor: 'pointer'
-  },
-  notificationInfo: {
-    fontSize: '14px',
-    color: '#fff',
-    margin: '0',
-  },
-  cashier: {
-    fontWeight: 'bold',
-  },
-  quantity: {
-    fontStyle: 'italic',
-  },
-};
 const Topbar = () => {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -37,12 +19,8 @@ const Topbar = () => {
 
   const [anchorE2, setAnchorE2] = React.useState(null);
   const openNot = Boolean(anchorE2);
-  const [openAccountNot, setOpenAccountNot] = React.useState(false);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
-  };
-  const handleClickNot = (event) => {
-    setAnchorE2(event.currentTarget);
   };
   const handleClickOpen = () => {
     setOpenAccount(true);

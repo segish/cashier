@@ -9,7 +9,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { FilledInput, FormControl, IconButton, Input, InputAdornment, InputLabel, OutlinedInput, useTheme } from "@mui/material";
+import { FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, useTheme } from "@mui/material";
 import { tokens } from '../theme';
 import { useNavigate } from 'react-router-dom';
 import Axios from 'axios';
@@ -142,7 +142,7 @@ export default function SignIn() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href="forgot_pass" variant="body2">
                   Forgot password?
                 </Link>
               </Grid>

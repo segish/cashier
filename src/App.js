@@ -15,6 +15,8 @@ import ChangePss from "./pages/ChangePassword";
 import Substore from "./pages/ViewSubStores";
 import PendingShop from "./pages/PendingShopItems";
 import PendingSsale from "./pages/PendingSaleItems";
+import Credits from "./pages/Credit";
+import ForgotPassword from "./pages/ForgotPassword";
 import { AuthContext } from "./context/Context";
 
 function App() {
@@ -94,6 +96,10 @@ function App() {
           element: <PendingSsale />
         },
         {
+          path: "/credits",
+          element: <Credits />
+        },
+        {
           path: "/change-password",
           element: <ChangePss />
         },
@@ -102,6 +108,10 @@ function App() {
     {
       path: "/login",
       element: <Login />,
+    },
+    {
+      path: "/forgot_pass",
+      element: <ForgotPassword />,
     }
   ]);
 

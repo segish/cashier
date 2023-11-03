@@ -289,6 +289,17 @@ const Sidebar = () => {
               isMobile={isMobile}
               handleSidebar={handleSidebar}
             />
+            <Item
+              title="credits"
+              to="/credits"
+              icon={<i className="fas fa-credit-card"></i>}
+              selected={selected}
+              setSelected={setSelected}
+              isCollapsed={isCollapsed}
+              setIsCollapsed={setIsCollapsed}
+              isMobile={isMobile}
+              handleSidebar={handleSidebar}
+            />
             
           </Box>
         </Menu>
