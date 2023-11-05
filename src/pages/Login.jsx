@@ -23,6 +23,7 @@ import { useEffect } from 'react';
 const defaultTheme = createTheme();
 
 export default function SignIn() {
+  document.title = "Login | Cashier"
   const { refreshUser, currentUser } = useContext(AuthContext)
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);

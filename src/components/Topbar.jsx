@@ -12,6 +12,7 @@ import { Link, Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/Context';
 import Account from './Account';
 const Topbar = () => {
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -58,7 +59,7 @@ const Topbar = () => {
   const colorMode = useContext(ColorModeContext);
 
   return (
-    <Box display="flex" justifyContent="end" p={2}>
+    <Box display="flex" justifyContent={isMobile ? `flex-end` : `flex-end`} p={2}>
 
       <Account fullScreen={fullScreen} open={openAccount} handleClose={handleCloseAccount} />
       <Box display="flex">

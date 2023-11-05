@@ -18,6 +18,7 @@ import { AuthContext } from '../context/Context';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 export default function ChangePassword() {
+  document.title = "change password | Cashier"
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [errorMessage, setErrorMessage] = useState('');

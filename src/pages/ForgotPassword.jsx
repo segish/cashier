@@ -21,6 +21,7 @@ import { MuiOtpInput } from 'mui-one-time-password-input'
 const defaultTheme = createTheme();
 
 export default function ForgotPassword() {
+  document.title = "forgot password | Cashier"
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [errorMessage, setErrorMessage] = useState('');

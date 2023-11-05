@@ -23,6 +23,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 const ViewSubStoreItems = () => {
+  document.title = "Sub Store items | STMS"
   const [open, setOpen] = React.useState(false);
   const [openMove, setOpenMove] = useState(false);
   const [openAlert, setOpenAlert] = useState(true);

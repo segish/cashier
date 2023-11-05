@@ -10,6 +10,7 @@ import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import LinearProgress from '@mui/material/LinearProgress';
 const PendingShopItem = () => {
+  document.title = "pending Sales | STMS"
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [openAlert, setOpenAlert] = useState(true);
   const theme = useTheme();
