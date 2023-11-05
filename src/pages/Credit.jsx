@@ -1,4 +1,4 @@
-import { Alert, Box,IconButton, useMediaQuery } from "@mui/material";
+import { Alert, Box, IconButton, useMediaQuery } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../theme";
 import Header from "../components/Header";
@@ -20,14 +20,17 @@ const PendingShopItem = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        setOpenAlert(false)
         setLoading(true);
         Axios.get('/credits/getall').then((response) => {
             setPendingList(response.data);
             setLoading(false);
         }).catch((error) => {
             if (error.response && error.response.data) {
+                setOpenAlert(true)
                 setErrorMessage(error.response.data);
             } else {
+                setOpenAlert(true)
                 setErrorMessage("An error occurred");
             }
             setLoading(false);

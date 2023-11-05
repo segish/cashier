@@ -35,6 +35,7 @@ export default function SignIn() {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleSubmit = (event) => {
+    setOpenAlert(false)
     setErrorMessage(null);
     setIsLoggedIn(true);
     event.preventDefault();
@@ -48,8 +49,10 @@ export default function SignIn() {
       navigate('/');
     }).catch((error) => {
       if (error.response && error.response.data) {
+        setOpenAlert(true)
         setErrorMessage(error.response.data);
       } else {
+        setOpenAlert(true)
         setErrorMessage("An error occurred");
       }
       setIsLoggedIn(false)
@@ -78,7 +81,6 @@ export default function SignIn() {
             alignItems: "center",
           }}
         >
-          {/* <Message message={message} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='success' /> */}
           <Message message={errorMessage} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='error' />
 
           <Avatar sx={{

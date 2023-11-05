@@ -35,6 +35,7 @@ const PendingShopItem = () => {
   };
 
   const handleDelete = (row) => {
+    setOpenAlert(false)
     setIsCancled(true);
     Axios.delete(`/toshoppending/undo/${row._id}`).then((response) => {
       setMessage("pending canceled successfully!");
@@ -43,8 +44,10 @@ const PendingShopItem = () => {
       setOpenCancle(false);
     }).catch((error) => {
       if (error.response && error.response.data) {
+        setOpenAlert(true)
         setErrorMessage(error.response.data);
       } else {
+        setOpenAlert(true)
         setErrorMessage("An error occurred");
       }
       setIsCancled(false);
@@ -58,8 +61,10 @@ const PendingShopItem = () => {
       setLoading(false);
     }).catch((error) => {
       if (error.response && error.response.data) {
+        setOpenAlert(true)
         setErrorMessage(error.response.data);
       } else {
+        setOpenAlert(true)
         setErrorMessage("An error occurred");
       }
       setLoading(false);

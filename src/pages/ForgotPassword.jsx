@@ -48,7 +48,8 @@ export default function ForgotPassword() {
     setOtp(newValue)
   }
   const handleComplete = (value) => {
-    console.log(value)
+    setOpenAlert(false)
+    setOpenAlert(false)
     setErrorMessage(null)
     setOtpLoading(true)
     Axios.post('/auth/otpcheck', {
@@ -59,9 +60,11 @@ export default function ForgotPassword() {
       setOtpLoading(false)
     }).catch((error) => {
       if (error.response && error.response.data) {
+        setOpenAlert(true)
         setErrorMessage(error.response.data);
         setOtpLoading(false)
       } else {
+        setOpenAlert(true)
         setErrorMessage("An error occurred");
         setOtpLoading(false)
       }
@@ -76,6 +79,7 @@ export default function ForgotPassword() {
   );
   const handlePhone = () => {
     setIsphoneSubmitted(true);
+    setOpenAlert(false)
     setErrorMessage(null)
     Axios.post('/auth/forgot', {
       phone: phone,
@@ -88,8 +92,10 @@ export default function ForgotPassword() {
       setIsPhoneSent(false);
       setIsphoneSubmitted(false);
       if (error.response && error.response.data) {
+        setOpenAlert(true)
         setErrorMessage(error.response.data);
       } else {
+        setOpenAlert(true)
         setErrorMessage("An error occurred");
       }
     })
@@ -98,6 +104,7 @@ export default function ForgotPassword() {
   const handleReset = () => {
     setIsSubmited(true);
     if (password !== confirmPassword) {
+      setOpenAlert(true)
       setErrorMessage("Password should be the same.");
     } else {
       Axios.post('/auth/reset', {
@@ -111,8 +118,10 @@ export default function ForgotPassword() {
         console.log('success');
       }).catch((error) => {
         if (error.response && error.response.data) {
+          setOpenAlert(true)
           setErrorMessage(error.response.data);
         } else {
+          setOpenAlert(true)
           setErrorMessage("An error occurred");
         }
       })
@@ -151,10 +160,10 @@ export default function ForgotPassword() {
             sx={{
               fontSize: 14,
             }}>
-            {!isPhoneSent ?<span>please Enter your phone below</span>:
-              isPhoneSent && !otpChecked && !isPhoneSubmitted ?  <><span>Enter 6 digit number sent to your phone below
-                <br /></span><span style={{display:"block",width:"100%",textAlign:"center"}}> otp will expire after 3 minuete
-              </span></>
+            {!isPhoneSent ? <span>please Enter your phone below</span> :
+              isPhoneSent && !otpChecked && !isPhoneSubmitted ? <><span>Enter 6 digit number sent to your phone below
+                <br /></span><span style={{ display: "block", width: "100%", textAlign: "center" }}> otp will expire after 3 minuete
+                </span></>
                 : <span>Enter the credentials below to reset your password</span>}
 
           </Typography>
@@ -183,7 +192,7 @@ export default function ForgotPassword() {
             {isPhoneSent && !otpChecked && <MuiOtpInput length={6} value={otp} onChange={handleChange} onComplete={handleComplete} />}
             {isPhoneSent && !otpChecked && <Button
               sx={{ mt: 1.5 }}
-            fullWidth
+              fullWidth
               variant="contained"
               onClick={() => handlePhone()}
             >

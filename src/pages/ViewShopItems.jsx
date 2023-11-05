@@ -92,6 +92,7 @@ const ViewShopItems = () => {
     setPrice('');
     setQuantity('');
     setTransactionType('');
+    setOpenAlert(false)
     setErrorMessage('');
     setTransfer(false);
     setCredit(false);
@@ -117,12 +118,15 @@ const ViewShopItems = () => {
         setTransfer(false);
         setCredit(false);
         setTransactionType('');
+        setOpenAlert(false)
         setErrorMessage('');
         setReload(!reload);
       }).catch((error) => {
         if (error.response && error.response.data) {
+          setOpenAlert(true)
           setErrorMessage(error.response.data);
         } else {
+          setOpenAlert(true)
           setErrorMessage("An error occurred");
         }
         setIsSaled(false);
@@ -143,12 +147,15 @@ const ViewShopItems = () => {
         setTransfer(false);
         setCredit(false);
         setTransactionType('');
+        setOpenAlert(false)
         setErrorMessage('');
         setReload(!reload);
       }).catch((error) => {
         if (error.response && error.response.data) {
+          setOpenAlert(true)
           setErrorMessage(error.response.data);
         } else {
+          setOpenAlert(true)
           setErrorMessage("An error occurred");
         }
         setIsSaled(false);
@@ -169,12 +176,15 @@ const ViewShopItems = () => {
         setTransfer(false);
         setCredit(false);
         setTransactionType('');
+        setOpenAlert(false)
         setErrorMessage('');
         setReload(!reload);
       }).catch((error) => {
         if (error.response && error.response.data) {
+          setOpenAlert(true)
           setErrorMessage(error.response.data);
         } else {
+          setOpenAlert(true)
           setErrorMessage("An error occurred");
         }
         setIsSaled(false);
@@ -187,8 +197,10 @@ const ViewShopItems = () => {
       setLoading(false);
     }).catch((error) => {
       if (error.response && error.response.data) {
+        setOpenAlert(true)
         setErrorMessage(error.response.data);
       } else {
+        setOpenAlert(true)
         setErrorMessage("An error occurred");
       }
       setLoading(false);
@@ -201,43 +213,43 @@ const ViewShopItems = () => {
     {
       field: "itemCode",
       headerName: "Item Code",
-      width:isMobile&& 120,
-      flex:!isMobile&&1,
+      width: isMobile && 120,
+      flex: !isMobile && 1,
       cellClassName: "name-column--cell",
     },
     {
       field: "name",
       headerName: "Item Name",
-      width:isMobile&& 120,
-      flex:!isMobile&&1,
+      width: isMobile && 120,
+      flex: !isMobile && 1,
       cellClassName: "name-column--cell",
     },
     {
       field: "type",
       headerName: "Item Type",
-      width:isMobile&& 120,
-      flex:!isMobile&&1,
+      width: isMobile && 120,
+      flex: !isMobile && 1,
       cellClassName: "name-column--cell",
     },
     {
       field: "specification",
       headerName: "Item Specification",
-      width:isMobile&& 120,
-      flex:!isMobile&&1,
+      width: isMobile && 120,
+      flex: !isMobile && 1,
       cellClassName: "name-column--cell",
     },
     {
       field: "expireDate",
       headerName: "Expire Date",
-      width:isMobile&& 120,
-      flex:!isMobile&&1,
+      width: isMobile && 120,
+      flex: !isMobile && 1,
       cellClassName: "name-column--cell",
     },
     {
       field: "quantity",
       headerName: "Quantity",
-      width:isMobile&& 120,
-      flex:!isMobile&&1,
+      width: isMobile && 120,
+      flex: !isMobile && 1,
       cellClassName: "name-column--cell",
     },
     {

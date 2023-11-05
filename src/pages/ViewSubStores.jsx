@@ -78,14 +78,17 @@ const ViewSubStoreItems = () => {
         setPrice('');
         setQuantity('');
         setTransactionType('');
+        setOpenAlert(false)
         setErrorMessage('');
         setTransfer(false);
         setCredit(false);
         setReload(!reload);
       }).catch((error) => {
         if (error.response && error.response.data) {
+          setOpenAlert(true)
           setErrorMessage(error.response.data);
         } else {
+          setOpenAlert(true)
           setErrorMessage("An error occurred");
         }
         setIsSaled(false);
@@ -104,14 +107,18 @@ const ViewSubStoreItems = () => {
         setPrice('');
         setQuantity('');
         setTransactionType('');
+        setOpenAlert(false)
+        setOpenAlert(false)
         setErrorMessage('');
         setTransfer(false);
         setCredit(false);
         setReload(!reload);
       }).catch((error) => {
         if (error.response && error.response.data) {
+          setOpenAlert(true)
           setErrorMessage(error.response.data);
         } else {
+          setOpenAlert(true)
           setErrorMessage("An error occurred");
         }
         setIsSaled(false);
@@ -130,14 +137,17 @@ const ViewSubStoreItems = () => {
         setPrice('');
         setQuantity('');
         setTransactionType('');
+        setOpenAlert(false)
         setErrorMessage('');
         setTransfer(false);
         setCredit(false);
         setReload(!reload);
       }).catch((error) => {
         if (error.response && error.response.data) {
+        setOpenAlert(true)
           setErrorMessage(error.response.data);
         } else {
+        setOpenAlert(true)
           setErrorMessage("An error occurred");
         }
         setIsSaled(false);
@@ -161,6 +171,7 @@ const ViewSubStoreItems = () => {
   }
   const resetForm = () => {
     setQuantityMove('');
+    setOpenAlert(false)
     setErrorMessage('');
   };
   const saleResetForm = () => {
@@ -168,6 +179,7 @@ const ViewSubStoreItems = () => {
     setPrice('');
     setQuantity('');
     setTransactionType('');
+    setOpenAlert(false)
     setErrorMessage('');
     setTransfer(false);
     setCredit(false);
@@ -199,8 +211,10 @@ const ViewSubStoreItems = () => {
       setReload(!reload);
     }).catch((error) => {
       if (error.response && error.response.data) {
+        setOpenAlert(true)
         setErrorMessage(error.response.data);
       } else {
+        setOpenAlert(true)
         setErrorMessage("An error occurred");
       }
       setIsMoved(false);
@@ -213,8 +227,10 @@ const ViewSubStoreItems = () => {
       setLoading(false);
     }).catch((error) => {
       if (error.response && error.response.data) {
+        setOpenAlert(true)
         setErrorMessage(error.response.data);
       } else {
+        setOpenAlert(true)
         setErrorMessage("An error occurred");
       }
       setLoading(false);

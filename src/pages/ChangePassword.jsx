@@ -30,12 +30,14 @@ export default function ChangePassword() {
   const [shownewPassword, setShownewPassword] = React.useState(false);
   const [showconfPassword, setShowconfPassword] = React.useState(false);
   const handleSubmit = (event) => {
+    setOpenAlert(false)
     setErrorMessage(null)
     setIsLoggedIn(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     if (data.get('newpassword') !== data.get('confirm_password')) {
       setIsLoggedIn(false);
+      setOpenAlert(true)
       setErrorMessage("please confirm password")
       return
     }
@@ -48,8 +50,10 @@ export default function ChangePassword() {
       navigate('/');
     }).catch((error) => {
       if (error.response && error.response.data) {
+        setOpenAlert(true)
         setErrorMessage(error.response.data);
       } else {
+        setOpenAlert(true)
         setErrorMessage("An error occurred");
       }
       setIsLoggedIn(false)
@@ -94,16 +98,16 @@ export default function ChangePassword() {
           Enter the credentials below to change your password
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <FormControl sx={{mt:1.5}} fullWidth>
+          <FormControl sx={{ mt: 1.5 }} fullWidth>
             <InputLabel>Enter Old Password</InputLabel>
             <OutlinedInput
-            margin="normal"
-            required
-            fullWidth
-            name="oldpassword"
-            label="Enter Old Password"
+              margin="normal"
+              required
+              fullWidth
+              name="oldpassword"
+              label="Enter Old Password"
               type={showPassword ? "text" : "password"}
-            id="password"
+              id="password"
               autoComplete="current-password"
               endAdornment={
                 <InputAdornment position="end">
@@ -116,9 +120,9 @@ export default function ChangePassword() {
                   </IconButton>
                 </InputAdornment>
               }
-          />
+            />
           </FormControl>
-          <FormControl sx={{mt:1.5}} fullWidth>
+          <FormControl sx={{ mt: 1.5 }} fullWidth>
             <InputLabel>Enter New Password</InputLabel>
             <OutlinedInput
               margin="normal"
@@ -143,15 +147,15 @@ export default function ChangePassword() {
             />
           </FormControl>
           <FormControl sx={{ mt: 1.5 }} fullWidth>
-            <InputLabel>Enter Old Password</InputLabel>
+            <InputLabel>Re Enter New Password</InputLabel>
             <OutlinedInput
-            margin="normal"
-            required
-            fullWidth
-            name="confirm_password"
-            label="Re Enter New Password"
+              margin="normal"
+              required
+              fullWidth
+              name="confirm_password"
+              label="Re Enter New Password"
               type={showconfPassword ? "text" : "password"}
-            id="confirm password"
+              id="confirm password"
               autoComplete="current-password"
               endAdornment={
                 <InputAdornment position="end">
@@ -164,7 +168,7 @@ export default function ChangePassword() {
                   </IconButton>
                 </InputAdornment>
               }
-          />
+            />
           </FormControl>
           <Button
             type="submit"
