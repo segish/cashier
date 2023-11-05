@@ -22,6 +22,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 const ViewShopItems = () => {
+  document.title = "Shop items | STMS"
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   // dialog
