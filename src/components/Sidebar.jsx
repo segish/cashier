@@ -225,17 +225,6 @@ const Sidebar = () => {
           )}
 
           <Box paddingLeft={isCollapsed ? undefined : "0px"}>
-            <Item
-              title="Dashboard"
-              to="/"
-              icon={<HomeOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-              isCollapsed={isCollapsed}
-              setIsCollapsed={setIsCollapsed}
-              isMobile={isMobile}
-              handleSidebar={handleSidebar}
-            />
             <Itemtest
               title="Pending"
               icon={<i class="fa fa-clock"></i>}
