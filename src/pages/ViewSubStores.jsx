@@ -32,6 +32,8 @@ const ViewSubStoreItems = () => {
   const [subStoreItems, setSubStoreItems] = useState([]);
   const [custName, setCustName] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [warehouseName, setWarehouseName] = useState('');
+  const [warehouseNameList, setwarehouseNameList] = useState([]);
   const [quantityMove, setQuantityMove] = useState('');
   const [price, setPrice] = useState('');
   const [transactionType, setTransactionType] = useState('');
@@ -144,10 +146,10 @@ const ViewSubStoreItems = () => {
         setReload(!reload);
       }).catch((error) => {
         if (error.response && error.response.data) {
-        setOpenAlert(true)
+          setOpenAlert(true)
           setErrorMessage(error.response.data);
         } else {
-        setOpenAlert(true)
+          setOpenAlert(true)
           setErrorMessage("An error occurred");
         }
         setIsSaled(false);
@@ -203,6 +205,7 @@ const ViewSubStoreItems = () => {
   const handleMove = (row) => {
     setIsMoved(true);
     Axios.post(`/Substore/transaction/${row._id}`, {
+      warehouseName: warehouseName,
       quantity: quantityMove,
     }).then((response) => {
       setOpenMove(false);
@@ -236,6 +239,25 @@ const ViewSubStoreItems = () => {
       setLoading(false);
     })
   }, [reload]);
+
+  useEffect(() => {
+    Axios.get('/warehouse/getall').then((response) => {
+      const filteredWarehouse = response.data.filter((warehouse) => warehouse.type === "Shop");
+      if (filteredWarehouse.length === 0) {
+        setErrorMessage("No shops found!!");
+      } else {
+        setwarehouseNameList(filteredWarehouse);
+      }
+    }).catch((error) => {
+      if (error.response && error.response.data) {
+        setErrorMessage(error.response.data);
+      } else {
+        setErrorMessage("An error occurredf" + error);
+      }
+    })
+  }, [reload]);
+
+
   const getRowId = (row) => {
     return row._id;
   };
@@ -328,6 +350,28 @@ const ViewSubStoreItems = () => {
           <Message message={errorMessage} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='error' />
         </DialogTitle>}
         <DialogContent dividers>
+          <FormControl
+            fullWidth
+            sx={{ gridColumn: "span 4" }}>
+            <InputLabel id="demo-simple-select-helper-label">Select shop Name</InputLabel>
+            <Select
+              required
+              fullWidth
+              variant="outlined"
+              sx={{ gridColumn: "span 4", color: "white", marginBottom: '5px' }}
+              value={warehouseName}
+              name="warehouse"
+              label="Warehouse Name"
+              onChange={(e) => setWarehouseName(e.target.value)}
+            >
+
+              {
+                warehouseNameList.map((warehouse) => (
+                  <MenuItem key={warehouse.id} value={warehouse.name}>{warehouse.name}</MenuItem>
+                ))
+              }
+            </Select>
+          </FormControl>
           <TextField
             sx={{
               marginBottom: '5px'

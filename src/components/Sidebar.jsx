@@ -299,6 +299,35 @@ const Sidebar = () => {
               setIsCollapsed={setIsCollapsed}
               isMobile={isMobile}
               handleSidebar={handleSidebar}
+            /><Itemtest
+              title="History"
+              icon={<i class="fa fa-history"></i>}
+              selected={selected}
+              setSelected={setSelected}
+              isCollapsed={isCollapsed}
+              isMobile={isMobile}
+              setIsCollapsed={setIsCollapsed}
+              handleSidebar={handleSidebar}
+              subMenu={
+                <Menu>
+                  <MenuItem
+                    active={selected === "Store to Store History"}
+                    icon={<i className="fas fa-exchange-alt"></i>}
+                    onClick={() => setSelected("Store to Store History")}
+                  >
+                    <Typography>Store to Store History</Typography>
+                    <Link to="/storehistory" />
+                  </MenuItem>
+                  <MenuItem
+                    active={selected === "Sales History"}
+                    icon={<i className="fas fa-history"></i>}
+                    onClick={() => setSelected("Sales History")}
+                  >
+                    <Typography>Sales History</Typography>
+                    <Link to="/saleshistory" />
+                  </MenuItem>
+                </Menu>
+              }
             />
             
           </Box>
