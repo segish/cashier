@@ -98,7 +98,7 @@ const Sidebar = () => {
       withCredentials: true,
     }).then((response) => {
       setUserName(response.data.adminName);
-      setRole(response.data.type); 
+      setRole(response.data.type);
       setProfile('../../assets/user.png')
       setShop(response.data.warehouseName)
       setProfilLoding(false)
@@ -194,14 +194,14 @@ const Sidebar = () => {
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
-                {profilLoding ?<Skeleton variant="circular" width={100} height={100} />
-                :<img
-                  alt="profile-user"
-                  width="100px"
-                  height="100px"
-                  src={profile}
-                  style={{ cursor: "pointer", borderRadius: "50%" }}
-                />}
+                {profilLoding ? <Skeleton variant="circular" width={100} height={100} />
+                  : <img
+                    alt="profile-user"
+                    width="100px"
+                    height="100px"
+                    src={profile}
+                    style={{ cursor: "pointer", borderRadius: "50%" }}
+                  />}
               </Box>
               <Box textAlign="center">
                 <Typography style={{ display: "flex", justifyContent: "center" }}
@@ -211,13 +211,13 @@ const Sidebar = () => {
                   sx={{ m: "10px 0 10px 0px" }}
                 >
                   {profilLoding ?
-                    <Skeleton variant="rounded" width={220} height={30} />:
-                  username}
+                    <Skeleton variant="rounded" width={220} height={30} /> :
+                    username}
                 </Typography>
-                <Typography style={{display: "flex",justifyContent:"center" }}
-                 variant="h5" color={colors.greenAccent[500]}>
+                <Typography style={{ display: "flex", justifyContent: "center" }}
+                  variant="h5" color={colors.greenAccent[500]}>
                   {profilLoding ?
-                    <Skeleton  variant="rounded" width={150} height={30} /> : 
+                    <Skeleton variant="rounded" width={150} height={30} /> :
                     role + "  of  " + shop}
                 </Typography>
               </Box>
@@ -225,38 +225,7 @@ const Sidebar = () => {
           )}
 
           <Box paddingLeft={isCollapsed ? undefined : "0px"}>
-            <Itemtest
-              title="Pending"
-              icon={<i class="fa fa-clock"></i>}
-              selected={selected}
-              setSelected={setSelected}
-              isCollapsed={isCollapsed}
-              isMobile={isMobile}
-              setIsCollapsed={setIsCollapsed}
-              handleSidebar={handleSidebar}
-              subMenu={
-                <Menu>
-                  <MenuItem
-                    active={selected === "sales Pending"}
-                    icon={<i className="fas fa-history"></i>}
-                    onClick={() => setSelected("sales Pending")}
-                  >
-                    <Typography>sales Pending</Typography>
-                    <Link to="/salespendinng" />
-                  </MenuItem>
-
-                  {currentUser.isSubstore &&<MenuItem
-                    active={selected === "Pending to Shop Items"}
-                    icon={<i className="fas fa-history"></i>}
-                    onClick={() => setSelected("Pending to Shop Items")}
-                  >
-                    <Typography>Pending to Shop Items</Typography>
-                    <Link to="/shoppendinng" />
-                  </MenuItem>}
-                </Menu>
-              }
-            />
-            {currentUser.isSubstore&& <Item
+            {currentUser.isSubstore && <Item
               title="substore"
               to="/substore"
               icon={<i className="fas fa-building"></i>}
@@ -288,7 +257,39 @@ const Sidebar = () => {
               setIsCollapsed={setIsCollapsed}
               isMobile={isMobile}
               handleSidebar={handleSidebar}
-            /><Itemtest
+            />
+            <Itemtest
+              title="Pending"
+              icon={<i class="fa fa-clock"></i>}
+              selected={selected}
+              setSelected={setSelected}
+              isCollapsed={isCollapsed}
+              isMobile={isMobile}
+              setIsCollapsed={setIsCollapsed}
+              handleSidebar={handleSidebar}
+              subMenu={
+                <Menu>
+                  <MenuItem
+                    active={selected === "sales Pending"}
+                    icon={<i className="fas fa-history"></i>}
+                    onClick={() => setSelected("sales Pending")}
+                  >
+                    <Typography>sales Pending</Typography>
+                    <Link to="/salespendinng" />
+                  </MenuItem>
+
+                  {currentUser.isSubstore && <MenuItem
+                    active={selected === "Pending to Shop Items"}
+                    icon={<i className="fas fa-history"></i>}
+                    onClick={() => setSelected("Pending to Shop Items")}
+                  >
+                    <Typography>Pending to Shop Items</Typography>
+                    <Link to="/shoppendinng" />
+                  </MenuItem>}
+                </Menu>
+              }
+            />
+            <Itemtest
               title="History"
               icon={<i class="fa fa-history"></i>}
               selected={selected}
@@ -318,7 +319,7 @@ const Sidebar = () => {
                 </Menu>
               }
             />
-            
+
           </Box>
         </Menu>
       </ProSidebar>
