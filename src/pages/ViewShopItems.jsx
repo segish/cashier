@@ -443,6 +443,7 @@ const ViewShopItems = () => {
             columns={columns}
             components={{ Toolbar: GridToolbar }}
             getRowId={getRowId}
+            loading={loading}
             slotProps={{
               toolbar: {
                 showQuickFilter: true,

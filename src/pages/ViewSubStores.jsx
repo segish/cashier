@@ -573,6 +573,7 @@ const ViewSubStoreItems = () => {
           <DataGrid
             rows={subStoreItems}
             columns={columns}
+            loading={loading}
             components={{ Toolbar: GridToolbar }}
             getRowId={getRowId}
             slotProps={{

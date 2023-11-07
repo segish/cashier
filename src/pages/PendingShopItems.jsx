@@ -253,6 +253,7 @@ const PendingShopItem = () => {
             rows={pendingList}
             columns={columns}
             components={{ Toolbar: GridToolbar }}
+            loading={loading}
             getRowId={getRowId}
             slotProps={{
               toolbar: {
