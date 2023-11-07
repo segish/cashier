@@ -35,6 +35,7 @@ const PendingShopItem = () => {
     const [message, setMessage] = useState('');
     const [isApproved, setIsApproved] = useState(false);
     const [selectedRow, setSelectedRow] = useState(null);
+    const [refetch, setRefetch] = useState(false);
 
     const handleClickOpen = (row) => {
         setOpen(true);
@@ -48,6 +49,7 @@ const PendingShopItem = () => {
     const handleApprove = (selectedrow) => {
         setIsApproved(true);
         Axios.post(`/credits/approve/${selectedrow._id}`).then((response) => {
+            setRefetch(!refetch)
             setOpen(false);
             setIsApproved(false);
             setOpenAlert(true);
@@ -80,7 +82,7 @@ const PendingShopItem = () => {
             }
             setLoading(false);
         })
-    }, []);
+    }, [refetch]);
 
     const getRowId = (row) => {
         return row._id;
