@@ -49,7 +49,6 @@ export default function ForgotPassword() {
   }
   const handleComplete = (value) => {
     setOpenAlert(false)
-    setOpenAlert(false)
     setErrorMessage(null)
     setOtpLoading(true)
     Axios.post('/auth/otpcheck', {

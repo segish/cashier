@@ -80,7 +80,7 @@ const ViewSubStoreItems = () => {
         setPrice('');
         setQuantity('');
         setTransactionType('');
-        setOpenAlert(false)
+        setOpenAlert(true)
         setErrorMessage('');
         setTransfer(false);
         setCredit(false);
@@ -109,8 +109,7 @@ const ViewSubStoreItems = () => {
         setPrice('');
         setQuantity('');
         setTransactionType('');
-        setOpenAlert(false)
-        setOpenAlert(false)
+        setOpenAlert(true)
         setErrorMessage('');
         setTransfer(false);
         setCredit(false);
@@ -139,7 +138,7 @@ const ViewSubStoreItems = () => {
         setPrice('');
         setQuantity('');
         setTransactionType('');
-        setOpenAlert(false)
+        setOpenAlert(true)
         setErrorMessage('');
         setTransfer(false);
         setCredit(false);

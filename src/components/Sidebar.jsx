@@ -6,7 +6,7 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import { Box, IconButton, Skeleton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import { tokens } from "../theme";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { AuthContext } from "../context/Context";
 import { Collapse } from "@mui/material";
@@ -251,6 +251,17 @@ const Sidebar = () => {
               title="credits"
               to="/credits"
               icon={<i className="fas fa-credit-card"></i>}
+              selected={selected}
+              setSelected={setSelected}
+              isCollapsed={isCollapsed}
+              setIsCollapsed={setIsCollapsed}
+              isMobile={isMobile}
+              handleSidebar={handleSidebar}
+            />
+            <Item
+              title="Expenses"
+              to="/exspense_pending"
+              icon={<ShoppingCartCheckoutIcon/>}
               selected={selected}
               setSelected={setSelected}
               isCollapsed={isCollapsed}

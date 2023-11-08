@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, IconButton, InputLabel, MenuItem, Select, TextField, useMediaQuery } from "@mui/material";
+import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, Grid, IconButton, InputLabel, MenuItem, Paper, Select, TextField, useMediaQuery } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../theme";
 import Header from "../components/Header";
@@ -9,6 +9,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import LinearProgress from '@mui/material/LinearProgress';
 import CircularProgress from '@mui/material/CircularProgress';
 import Message from "../components/Message";
+import AddIcon from '@mui/icons-material/Add';
 import { styled } from '@mui/material/styles';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -40,6 +41,10 @@ const ViewShopItems = () => {
   const [bankName, setBankName] = useState('');
   const [phone, setPhone] = useState('');
   const [creditDate, setCreditDate] = useState('');
+  const [expenseAmount, setExpenseAmount] = useState('');
+  const [reason, setReason] = useState('');
+  const [totalSale, setTotalSale] = useState('');
+  const [totalExpense, setTotalExpense] = useState('');
   const [credit, setCredit] = useState(false);
   const [transfer, setTransfer] = useState(false);
   const [chequeNumber, setChequeNumber] = useState(null);
@@ -51,8 +56,11 @@ const ViewShopItems = () => {
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isSaled, setIsSaled] = useState(false);
+  const [isExpense, setIsExpense] = useState(false);
   const [reload, setReload] = useState(false);
+  const [refetch, setRefetch] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [expense, setExpense] = useState(false);
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   const handleChange = (event) => {
@@ -97,6 +105,9 @@ const ViewShopItems = () => {
     setTransfer(false);
     setCredit(false);
   };
+  const handleMoveClose = () => {
+    setExpense(false);
+  };
   const handleSale = (selectedrow) => {
     setIsSaled(true);
     if (transactionType === 'credit') {
@@ -118,7 +129,7 @@ const ViewShopItems = () => {
         setTransfer(false);
         setCredit(false);
         setTransactionType('');
-        setOpenAlert(false)
+        setOpenAlert(true)
         setErrorMessage('');
         setReload(!reload);
       }).catch((error) => {
@@ -147,7 +158,7 @@ const ViewShopItems = () => {
         setTransfer(false);
         setCredit(false);
         setTransactionType('');
-        setOpenAlert(false)
+        setOpenAlert(true)
         setErrorMessage('');
         setReload(!reload);
       }).catch((error) => {
@@ -176,7 +187,7 @@ const ViewShopItems = () => {
         setTransfer(false);
         setCredit(false);
         setTransactionType('');
-        setOpenAlert(false)
+        setOpenAlert(true)
         setErrorMessage('');
         setReload(!reload);
       }).catch((error) => {
@@ -191,6 +202,37 @@ const ViewShopItems = () => {
       })
     }
   }
+
+  const handeleExpense = (selectedrow) => {
+    setIsExpense(true);
+    Axios.post(`/expense/newexpense`, {
+      amount: expenseAmount,
+      reason: reason,
+    }).then((response) => {
+      setOpenAlert(true)
+      setMessage(response.data);
+      setIsExpense(false);
+      setOpen(false);
+      setExpenseAmount('');
+      setReason('');
+      setErrorMessage('');
+      setExpense(false);
+      setRefetch(!refetch)
+    }).catch((error) => {
+      if (error.response && error.response.data) {
+        setOpenAlert(true)
+        setErrorMessage(error.response.data);
+        setMessage('');
+      } else {
+        setOpenAlert(true)
+        setErrorMessage("An error occurred");
+        setMessage('');
+      }
+      setIsExpense(false);
+      setExpense(false);
+    })
+  }
+
   useEffect(() => {
     Axios.get('/Shop/getall').then((response) => {
       setShopItems(response.data);
@@ -206,6 +248,22 @@ const ViewShopItems = () => {
       setLoading(false);
     })
   }, [reload]);
+
+  useEffect(() => {
+    Axios.get('/expense/total').then((response) => {
+      setTotalExpense(response.data.totalExpense);
+      setTotalSale(response.data.totalSale)
+    }).catch((error) => {
+      if (error.response && error.response.data) {
+        setOpenAlert(true)
+        setErrorMessage(error.response.data);
+      } else {
+        setOpenAlert(true)
+        setErrorMessage("An error occurred");
+      }
+      setLoading(false);
+    })
+  }, [reload,refetch]);
   const getRowId = (row) => {
     return row._id;
   };
@@ -261,8 +319,85 @@ const ViewShopItems = () => {
       },
     },
   ];
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  }));
   return (
     <>
+
+      <BootstrapDialog
+        open={expense}
+        onClose={handleMoveClose}
+        aria-labelledby="customized-dialog-title"
+        fullWidth
+      >
+        <DialogTitle
+          id="customized-dialog-title"
+        >
+          New Expense
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={() => { handleMoveClose() }}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        {errorMessage && <DialogTitle>
+          <Message message={errorMessage} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='error' />
+        </DialogTitle>}
+        <DialogContent dividers>
+          <TextField
+            sx={{
+              marginBottom: '5px'
+            }}
+            required
+            fullWidth
+            variant="outlined"
+            type="number"
+            label="amount"
+            value={expenseAmount}
+            name="amount"
+            onChange={(e) => setExpenseAmount(e.target.value)}
+          />
+          <TextField
+            sx={{
+              marginBottom: '5px'
+            }}
+            required
+            fullWidth
+            variant="outlined"
+            type="text"
+            multiline
+            rows={2}
+            label="reason"
+            value={reason}
+            name="quantity"
+            onChange={(e) => setReason(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions dividers>
+
+          <Button style={{ color: 'white' }}
+            onClick={() => handeleExpense()}
+            disabled={isExpense}
+          >
+            {isExpense ? <CircularProgress color="secondary" size={30} /> : 'Add'}
+          </Button>
+        </DialogActions>
+      </BootstrapDialog>
+
+
+
       <BootstrapDialog
         open={open}
         onClose={handleClose}
@@ -438,6 +573,27 @@ const ViewShopItems = () => {
             },
           }}
         >
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Grid container spacing={2}>
+              <Grid item xs={4}>
+                <Item style={{ color: "blue",fontSize:"20px" }}>TODAY'S TOTAL SALE = {totalSale} Brr</Item>
+              </Grid>
+              <Grid item xs={4}>
+                <Item style={{ color: "red", fontSize: "20px" }}>TODAY'S TOTAL EXPENSE = {totalExpense} brr</Item>
+              </Grid>
+              <Grid item xs={4}>
+                <Item style={{ color: "yellow", fontSize: "20px" }}>NET INCOME = {totalSale-totalExpense} brr</Item>
+              </Grid>
+            </Grid>
+            <Button
+              variant="contained"
+              onClick={() => setExpense(true)} className="btn btn-primary mx-1 "
+              startIcon={<AddIcon />}
+              sx={{ marginLeft: 'auto'}}
+            >
+              New Expense
+            </Button>
+          </Box>
           <DataGrid
             rows={shopeItems}
             columns={columns}

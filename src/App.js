@@ -18,6 +18,7 @@ import PendingSsale from "./pages/PendingSaleItems";
 import Credits from "./pages/Credit";
 import ForgotPassword from "./pages/ForgotPassword";
 import History from "./pages/History";
+import Expense from "./pages/Expense";
 import SaleHistory from "./pages/SalesHistory";
 import { AuthContext } from "./context/Context";
 
@@ -108,6 +109,10 @@ function App() {
         {
           path: "/saleshistory",
           element: <SaleHistory />
+        },
+        {
+          path: "/exspense_pending",
+          element: <Expense />
         },
         {
           path: "/change-password",
