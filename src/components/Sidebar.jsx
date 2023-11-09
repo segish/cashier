@@ -225,19 +225,8 @@ const Sidebar = () => {
           )}
 
           <Box paddingLeft={isCollapsed ? undefined : "0px"}>
-            {currentUser.isSubstore && <Item
-              title="substore"
-              to="/substore"
-              icon={<i className="fas fa-building"></i>}
-              selected={selected}
-              setSelected={setSelected}
-              isCollapsed={isCollapsed}
-              setIsCollapsed={setIsCollapsed}
-              isMobile={isMobile}
-              handleSidebar={handleSidebar}
-            />}
             <Item
-              title="shop"
+              title="Shop"
               to="/shop"
               icon={<i className="fas fa-shopping-bag"></i>}
               selected={selected}
@@ -246,9 +235,20 @@ const Sidebar = () => {
               setIsCollapsed={setIsCollapsed}
               isMobile={isMobile}
               handleSidebar={handleSidebar}
-            />
+              />
+              {currentUser.isSubstore && <Item
+                title="Substore"
+                to="/substore"
+                icon={<i className="fas fa-building"></i>}
+                selected={selected}
+                setSelected={setSelected}
+                isCollapsed={isCollapsed}
+                setIsCollapsed={setIsCollapsed}
+                isMobile={isMobile}
+                handleSidebar={handleSidebar}
+              />}
             <Item
-              title="credits"
+              title="Credits"
               to="/credits"
               icon={<i className="fas fa-credit-card"></i>}
               selected={selected}
@@ -281,11 +281,11 @@ const Sidebar = () => {
               subMenu={
                 <Menu>
                   <MenuItem
-                    active={selected === "sales Pending"}
+                    active={selected === "Sales Pending"}
                     icon={<i className="fas fa-history"></i>}
-                    onClick={() => setSelected("sales Pending")}
+                    onClick={() => setSelected("Sales Pending")}
                   >
-                    <Typography>sales Pending</Typography>
+                    <Typography>Sales Pending</Typography>
                     <Link to="/salespendinng" />
                   </MenuItem>
 
@@ -316,7 +316,7 @@ const Sidebar = () => {
                     icon={<i className="fas fa-exchange-alt"></i>}
                     onClick={() => setSelected("Store to Store History")}
                   >
-                    <Typography>Store to Store History</Typography>
+                    <Typography>Store To Store History</Typography>
                     <Link to="/storehistory" />
                   </MenuItem>
                   <MenuItem

@@ -203,7 +203,7 @@ const ViewShopItems = () => {
     }
   }
 
-  const handeleExpense = (selectedrow) => {
+  const handeleExpense = () => {
     setIsExpense(true);
     Axios.post(`/expense/newexpense`, {
       amount: expenseAmount,
@@ -324,6 +324,12 @@ const ViewShopItems = () => {
     ...theme.typography.body2,
     padding: theme.spacing(1),
     textAlign: 'center',
+    display:"flex",
+    alignItems:"center",
+    justifyContent:"center",
+    height:"50px",
+    marginLeft: "4px",
+    marginRight: "4px",
     color: theme.palette.text.secondary,
   }));
   return (
@@ -573,15 +579,15 @@ const ViewShopItems = () => {
             },
           }}
         >
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Grid container spacing={2}>
-              <Grid item xs={4}>
+          <Box sx={{ display: 'flex',flexDirection:isMobile&&"column", justifyContent: 'flex-end' }}>
+            <Grid container spacing={isMobile?0.5:2} >
+              <Grid item xs={isMobile?12:4}>
                 <Item style={{ color: "blue",fontSize:"20px" }}>TODAY'S TOTAL SALE = {totalSale} Brr</Item>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={isMobile ? 12:4}>
                 <Item style={{ color: "red", fontSize: "20px" }}>TODAY'S TOTAL EXPENSE = {totalExpense} brr</Item>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={isMobile ? 12:3}>
                 <Item style={{ color: "yellow", fontSize: "20px" }}>NET INCOME = {totalSale-totalExpense} brr</Item>
               </Grid>
             </Grid>
@@ -589,7 +595,7 @@ const ViewShopItems = () => {
               variant="contained"
               onClick={() => setExpense(true)} className="btn btn-primary mx-1 "
               startIcon={<AddIcon />}
-              sx={{ marginLeft: 'auto'}}
+              sx={{ marginTop: "4px", backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff', }}
             >
               New Expense
             </Button>
