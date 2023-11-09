@@ -32,6 +32,8 @@ const ViewSubStoreItems = () => {
   const [subStoreItems, setSubStoreItems] = useState([]);
   const [custName, setCustName] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [cash, setCash] = useState(false);
+  const [cashOrTransfer, setCashOrTransfer] = useState('');
   const [warehouseName, setWarehouseName] = useState('');
   const [warehouseNameList, setwarehouseNameList] = useState([]);
   const [quantityMove, setQuantityMove] = useState('');
@@ -53,12 +55,26 @@ const ViewSubStoreItems = () => {
   const [isSaled, setIsSaled] = useState(false);
   const [isMoved, setIsMoved] = useState(false);
   const [reload, setReload] = useState(false);
+  const [isPtransfer, setIsPtransfer] = useState(false);
+  const [partialPayment, setPartialPayment] = useState(false);
+  const [paidAmount, setPaidAmount] = useState('');
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   const handleChange = (event) => {
     setChecked(event.target.checked)
     setChequeNumber(null);
   };
+  const handlePaymentType = (value) => {
+    if (value === "transfer") {
+      setIsPtransfer(true);
+      setCash(false);
+      setCashOrTransfer(value);
+    } else {
+      setCash(true);
+      setIsPtransfer(false);
+      setCashOrTransfer(value);
+    }
+  }
 
   const handleSale = (selectedrow) => {
     setIsSaled(true);
@@ -73,6 +89,7 @@ const ViewSubStoreItems = () => {
         paymentDate: creditDate,
         cheque: chequeNumber,
       }).then((response) => {
+        setOpenAlert(true);
         setMessage("Sale Adedded to pending successfully waiting to be approved by Admin!! ");
         setIsSaled(false);
         setOpen(false);
@@ -84,6 +101,7 @@ const ViewSubStoreItems = () => {
         setErrorMessage('');
         setTransfer(false);
         setCredit(false);
+        saleResetForm();
         setReload(!reload);
       }).catch((error) => {
         if (error.response && error.response.data) {
@@ -104,15 +122,16 @@ const ViewSubStoreItems = () => {
       }).then((response) => {
         setOpen(false);
         setIsSaled(false);
+        setOpenAlert(true);
         setMessage("Sale Adedded to pending successfully waiting to be approved by Admin!!");
         setCustName('');
         setPrice('');
         setQuantity('');
         setTransactionType('');
-        setOpenAlert(true)
         setErrorMessage('');
         setTransfer(false);
         setCredit(false);
+        saleResetForm();
         setReload(!reload);
       }).catch((error) => {
         if (error.response && error.response.data) {
@@ -120,6 +139,42 @@ const ViewSubStoreItems = () => {
           setErrorMessage(error.response.data);
         } else {
           setOpenAlert(true)
+          setErrorMessage("An error occurred");
+        }
+        setIsSaled(false);
+      })
+    } else if (transactionType === 'partial_payment') {
+      Axios.post(`/Substore/holesall/${selectedrow._id}`, {
+        quantity: quantity,
+        customerName: custName,
+        paymentMethod: "halfpaid",
+        amount: price,
+        phone: phone,
+        paymentDate: creditDate,
+        cheque: chequeNumber,
+        halfPayMethod: cash ? cashOrTransfer : `${cashOrTransfer}(Bank N: ${bankName}, Acc No: ${accountNumber})`,
+        paidamount: paidAmount
+      }).then((response) => {
+        setOpenAlert(true);
+        setMessage(`${quantity}  ${selectedrow.name} solled with both ${cashOrTransfer} and credit successfully!!`);
+        setOpen(false);
+        setCustName('');
+        setPrice('');
+        setQuantity('');
+        setTransactionType('');
+        setErrorMessage('');
+        setTransfer(false);
+        setIsSaled(false);
+        setCredit(false);
+        saleResetForm();
+        setReload(!reload);
+      }).catch((error) => {
+        console.log('error ' + error);
+        if (error.response && error.response.data) {
+          setOpenAlert(true);
+          setErrorMessage(error.response.data);
+        } else {
+          setOpenAlert(true);
           setErrorMessage("An error occurred");
         }
         setIsSaled(false);
@@ -133,14 +188,15 @@ const ViewSubStoreItems = () => {
       }).then((response) => {
         setOpen(false);
         setIsSaled(false);
+        setOpenAlert(true)
         setMessage("Sale Adedded to pending successfully waiting to be approved by Admin!!");
         setCustName('');
         setPrice('');
         setQuantity('');
         setTransactionType('');
-        setOpenAlert(true)
         setErrorMessage('');
         setTransfer(false);
+        saleResetForm();
         setCredit(false);
         setReload(!reload);
       }).catch((error) => {
@@ -158,21 +214,39 @@ const ViewSubStoreItems = () => {
   const handleTransactionType = (value) => {
     if (value === "transfer") {
       setTransfer(true);
+      setPartialPayment(false);
+      setIsPtransfer(false);
       setCredit(false);
       setTransactionType(value);
     } else if (value === 'credit') {
       setCredit(true);
       setTransfer(false);
+      setPartialPayment(false);
+      setIsPtransfer(false);
+      setTransactionType(value);
+    } else if (value === 'partial_payment') {
+      setPartialPayment(true);
+      setCredit(false);
+      setTransfer(false);
       setTransactionType(value);
     } else {
       setTransactionType(value);
       setTransfer(false);
+      setPartialPayment(false);
+      setIsPtransfer(false);
       setCredit(false);
     }
+    setCashOrTransfer('');
+    setCreditDate('');
+    setPaidAmount('');
+    setPhone('');
+    setChequeNumber(null);
+    setBankName('');
+    setAccountNumber('');
   }
   const resetForm = () => {
+    setWarehouseName('');
     setQuantityMove('');
-    setOpenAlert(false)
     setErrorMessage('');
   };
   const saleResetForm = () => {
@@ -180,10 +254,15 @@ const ViewSubStoreItems = () => {
     setPrice('');
     setQuantity('');
     setTransactionType('');
-    setOpenAlert(false)
     setErrorMessage('');
+    setCashOrTransfer('');
+    setPaidAmount('');
+    setPartialPayment(false);
+    setIsPtransfer(false);
     setTransfer(false);
     setCredit(false);
+    setChecked(false);
+    setIsSaled(false);
   };
   const handleClickOpen = (row) => {
     setOpen(true);
@@ -297,11 +376,12 @@ const ViewSubStoreItems = () => {
       cellClassName: "name-column--cell",
     },
     {
-      field: "quantity",
+      field: "NetQuantity",
       headerName: "Quantity",
       width: isMobile && 120,
       flex: !isMobile && 1,
       cellClassName: "name-column--cell",
+      valueGetter: (params) => params.row.quantity - params.row.pendingSaleQuantity - params.row.pendingToshopQuantity,
     },
     {
       field: "move",
@@ -430,7 +510,7 @@ const ViewSubStoreItems = () => {
           />
           <TextField
             required
-            label="Quantity"
+            label={`How Many ${selectedRow && selectedRow.name} ?`}
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
             fullWidth
@@ -439,7 +519,7 @@ const ViewSubStoreItems = () => {
           />
           <TextField
             required
-            label="Price"
+            label={`Unit Price (Price of 1 ${selectedRow && selectedRow.name}) `}
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             fullWidth
@@ -460,27 +540,18 @@ const ViewSubStoreItems = () => {
               <MenuItem value="transfer">Transfer</MenuItem>
               <MenuItem value="cash">Cash</MenuItem>
               <MenuItem value="credit">Credit</MenuItem>
+              <MenuItem value="partial_payment">PartialPayment</MenuItem>
             </Select>
           </FormControl>
-          {transfer &&
-            <FormControl
-              fullWidth
-              sx={{ gridColumn: "span 4" }}>
-              <InputLabel id="demo-simple-select-helper-label">Select Bank Name</InputLabel>
-              <Select
-                required
-                label="Bank Name"
-                value={bankName}
-                onChange={(e) => setBankName(e.target.value)}
-                fullWidth
-                margin="normal"
-              >
-                <MenuItem value="cbe">CBE</MenuItem>
-                <MenuItem value="awash">Awash</MenuItem>
-                <MenuItem value="abay">Abay</MenuItem>
-              </Select>
-            </FormControl>
-          }
+          {transfer && <TextField
+            required
+            label="Bank Name"
+            type="text"
+            value={bankName}
+            onChange={(e) => setBankName(e.target.value)}
+            fullWidth
+            margin="normal"
+          />}
           {transfer && <TextField
             required
             label="Account Number"
@@ -489,6 +560,82 @@ const ViewSubStoreItems = () => {
             fullWidth
             margin="normal"
           />}
+          {partialPayment && <TextField
+            required
+            label="Paid Amount"
+            type="text"
+            value={paidAmount}
+            onChange={(e) => setPaidAmount(e.target.value)}
+            fullWidth
+            margin="normal"
+          />}
+          {partialPayment &&
+            <FormControl
+              fullWidth
+              sx={{ gridColumn: "span 4" }}>
+              <InputLabel id="demo-simple-select-helper-label">Choose Payment Type</InputLabel>
+              <Select
+                required
+                value={cashOrTransfer}
+                onChange={(e) => handlePaymentType(e.target.value)}
+                fullWidth
+                margin="normal"
+              >
+                <MenuItem value="transfer">Transfer</MenuItem>
+                <MenuItem value="cash">Cash</MenuItem>
+              </Select>
+            </FormControl>
+          }
+          {isPtransfer && !cash && <TextField
+            required
+            label="Bank Name"
+            type="text"
+            value={bankName}
+            onChange={(e) => setBankName(e.target.value)}
+            fullWidth
+            margin="normal"
+          />}
+
+          {isPtransfer && !cash && <TextField
+            required
+            label="Account Number"
+            value={accountNumber}
+            onChange={(e) => setAccountNumber(e.target.value)}
+            fullWidth
+            margin="normal"
+          />}
+          {partialPayment && <TextField
+            required
+            label="phone Number"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            fullWidth
+            margin="normal"
+            type="number"
+          />}
+          {partialPayment && <FormControlLabel required control={<Checkbox onChange={handleChange} />} label="Have Cheque book?" />}
+          {checked && <TextField
+            required
+            label="Enter Cheque Number?"
+            value={chequeNumber}
+            onChange={(e) => setChequeNumber(e.target.value)}
+            fullWidth
+            margin="normal"
+            type="number"
+          />}
+          {
+            partialPayment && <TextField
+              required
+              label="Payment Date"
+              type="date"
+              value={creditDate}
+              onChange={(e) => setCreditDate(e.target.value)}
+              fullWidth
+              margin="normal"
+              InputLabelProps={{ shrink: true }}
+              InputProps={{ inputProps: { min: "yyyy-mm-dd" } }}
+            />
+          }
           {credit && <FormControlLabel required control={<Checkbox onChange={handleChange} />} label="Have Cheque Book?" />}
           {credit && checked && <TextField
             required

@@ -48,10 +48,12 @@ const ViewShopItems = () => {
   const [credit, setCredit] = useState(false);
   const [transfer, setTransfer] = useState(false);
   const [chequeNumber, setChequeNumber] = useState(null);
-  const [selectedRow, setSelectedRow] = useState(null);
-  //input data
-
-  //warehouse  and shope
+  const [selectedRow, setSelectedRow] = useState(null); 
+  const [partialPayment, setPartialPayment] = useState(false);
+  const [isPtransfer, setIsPtransfer] = useState(false);
+  const [cashOrTransfer, setCashOrTransfer] = useState('');
+  const [paidAmount, setPaidAmount] = useState('');
+  const [cash, setCash] = useState(false);
   const [shopeItems, setShopItems] = useState([]);
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -60,6 +62,7 @@ const ViewShopItems = () => {
   const [reload, setReload] = useState(false);
   const [refetch, setRefetch] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [refetching, setRefetching] = useState(true);
   const [expense, setExpense] = useState(false);
   const isMobile = useMediaQuery('(max-width: 768px)');
 
@@ -72,16 +75,34 @@ const ViewShopItems = () => {
     if (value === "transfer") {
       setTransfer(true);
       setCredit(false);
+      setPartialPayment(false);
+      setIsPtransfer(false);
       setTransactionType(value);
     } else if (value === 'credit') {
       setCredit(true);
+      setTransfer(false);
+      setPartialPayment(false);
+      setIsPtransfer(false);
+      setTransactionType(value);
+    } else if (value === 'partial_payment') {
+      setPartialPayment(true);
+      setCredit(false);
       setTransfer(false);
       setTransactionType(value);
     } else {
       setTransactionType(value);
       setTransfer(false);
+      setPartialPayment(false);
+      setIsPtransfer(false);
       setCredit(false);
     }
+    setCashOrTransfer('');
+    setCreditDate('');
+    setPaidAmount('');
+    setPhone('');
+    setChequeNumber(null);
+    setBankName('');
+    setAccountNumber('');
   }
   // popup related
   const handleClickOpen = (row) => {
@@ -92,21 +113,26 @@ const ViewShopItems = () => {
     setOpen(false);
     setSelectedRow(null);
   };
-
-  //popup related
-
   const saleResetForm = () => {
     setCustName('');
     setPrice('');
     setQuantity('');
     setTransactionType('');
-    setOpenAlert(false)
     setErrorMessage('');
+    setCashOrTransfer('');
+    setPaidAmount('');
+    setPartialPayment(false);
+    setIsPtransfer(false);
+    setIsSaled(false);
     setTransfer(false);
+    setChecked(false);
     setCredit(false);
+    setReason('')
+    setExpenseAmount('')
   };
   const handleMoveClose = () => {
     setExpense(false);
+    saleResetForm();
   };
   const handleSale = (selectedrow) => {
     setIsSaled(true);
@@ -167,6 +193,41 @@ const ViewShopItems = () => {
           setErrorMessage(error.response.data);
         } else {
           setOpenAlert(true)
+          setErrorMessage("An error occurred");
+        }
+        setIsSaled(false);
+      })
+    } else if (transactionType === 'partial_payment') {
+      Axios.post(`/Shop/transaction/${selectedrow._id}`, {
+        quantity: quantity,
+        customerName: custName,
+        paymentMethod: "halfpaid",
+        amount: price,
+        phone: phone,
+        paymentDate: creditDate,
+        cheque: chequeNumber,
+        halfPayMethod: cash ? cashOrTransfer : `${cashOrTransfer}(Bank N: ${bankName}, Acc No: ${accountNumber})`,
+        paidamount: paidAmount
+      }).then((response) => {
+        setOpenAlert(true);
+        setMessage(`${quantity}  ${selectedrow.name} solled with both ${cashOrTransfer} and credit successfully!!`);
+        setOpen(false);
+        setCustName('');
+        setPrice('');
+        setQuantity('');
+        setTransactionType('');
+        setErrorMessage('');
+        setTransfer(false);
+        setCredit(false);
+        setIsSaled(false);
+        saleResetForm();
+        setReload(!reload);
+      }).catch((error) => {
+        if (error.response && error.response.data) {
+          setOpenAlert(true);
+          setErrorMessage(error.response.data);
+        } else {
+          setOpenAlert(true);
           setErrorMessage("An error occurred");
         }
         setIsSaled(false);
@@ -250,9 +311,11 @@ const ViewShopItems = () => {
   }, [reload]);
 
   useEffect(() => {
+    setRefetching(true);
     Axios.get('/expense/total').then((response) => {
       setTotalExpense(response.data.totalExpense);
       setTotalSale(response.data.totalSale)
+      setRefetching(false);
     }).catch((error) => {
       if (error.response && error.response.data) {
         setOpenAlert(true)
@@ -261,9 +324,21 @@ const ViewShopItems = () => {
         setOpenAlert(true)
         setErrorMessage("An error occurred");
       }
+      setRefetching(false);
       setLoading(false);
     })
-  }, [reload,refetch]);
+  }, [reload, refetch]);
+  const handlePaymentType = (value) => {
+    if (value === "transfer") {
+      setIsPtransfer(true);
+      setCash(false);
+      setCashOrTransfer(value);
+    } else {
+      setCash(true);
+      setIsPtransfer(false);
+      setCashOrTransfer(value);
+    }
+  }
   const getRowId = (row) => {
     return row._id;
   };
@@ -304,11 +379,12 @@ const ViewShopItems = () => {
       cellClassName: "name-column--cell",
     },
     {
-      field: "quantity",
+      field: "NetQuantity",
       headerName: "Quantity",
       width: isMobile && 120,
       flex: !isMobile && 1,
       cellClassName: "name-column--cell",
+      valueGetter: (params) => params.row.quantity - params.row.pendingSaleQuantity ,
     },
     {
       field: "sale",
@@ -470,26 +546,19 @@ const ViewShopItems = () => {
               <MenuItem value="transfer">Transfer</MenuItem>
               <MenuItem value="cash">Cash</MenuItem>
               <MenuItem value="credit">Credit</MenuItem>
+              <MenuItem value="partial_payment">PartialPayment</MenuItem>
             </Select>
           </FormControl>
           {transfer &&
-            <FormControl
+            <TextField
+              required
+              label="Bank Name"
+              type="text"
+              value={bankName}
+              onChange={(e) => setBankName(e.target.value)}
               fullWidth
-              sx={{ gridColumn: "span 4" }}>
-              <InputLabel id="demo-simple-select-helper-label">Select Bank Name</InputLabel>
-              <Select
-                required
-                label="Bank Name"
-                value={bankName}
-                onChange={(e) => setBankName(e.target.value)}
-                fullWidth
-                margin="normal"
-              >
-                <MenuItem value="cbe">CBE</MenuItem>
-                <MenuItem value="awash">Awash</MenuItem>
-                <MenuItem value="abay">Abay</MenuItem>
-              </Select>
-            </FormControl>
+              margin="normal"
+            />
           }
           {transfer && <TextField
             required
@@ -499,6 +568,82 @@ const ViewShopItems = () => {
             fullWidth
             margin="normal"
           />}
+          {partialPayment && <TextField
+            required
+            label="Paid Amount"
+            type="text"
+            value={paidAmount}
+            onChange={(e) => setPaidAmount(e.target.value)}
+            fullWidth
+            margin="normal"
+          />}
+          {partialPayment &&
+            <FormControl
+              fullWidth
+              sx={{ gridColumn: "span 4" }}>
+              <InputLabel id="demo-simple-select-helper-label">Choose Payment Type</InputLabel>
+              <Select
+                required
+                value={cashOrTransfer}
+                onChange={(e) => handlePaymentType(e.target.value)}
+                fullWidth
+                margin="normal"
+              >
+                <MenuItem value="transfer">Transfer</MenuItem>
+                <MenuItem value="cash">Cash</MenuItem>
+              </Select>
+            </FormControl>
+          }
+          {isPtransfer && !cash && <TextField
+            required
+            label="Bank Name"
+            type="text"
+            value={bankName}
+            onChange={(e) => setBankName(e.target.value)}
+            fullWidth
+            margin="normal"
+          />}
+
+          {isPtransfer && !cash && <TextField
+            required
+            label="Account Number"
+            value={accountNumber}
+            onChange={(e) => setAccountNumber(e.target.value)}
+            fullWidth
+            margin="normal"
+          />}
+          {partialPayment && <TextField
+            required
+            label="phone Number"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            fullWidth
+            margin="normal"
+            type="number"
+          />}
+          {partialPayment && <FormControlLabel required control={<Checkbox onChange={handleChange} />} label="Have Cheque book?" />}
+          {partialPayment && checked && <TextField
+            required
+            label="Enter Cheque Number?"
+            value={chequeNumber}
+            onChange={(e) => setChequeNumber(e.target.value)}
+            fullWidth
+            margin="normal"
+            type="number"
+          />}
+          {
+            partialPayment && <TextField
+              required
+              label="Payment Date"
+              type="date"
+              value={creditDate}
+              onChange={(e) => setCreditDate(e.target.value)}
+              fullWidth
+              margin="normal"
+              InputLabelProps={{ shrink: true }}
+              InputProps={{ inputProps: { min: "yyyy-mm-dd" } }}
+            />
+          }
           {credit && <FormControlLabel required control={<Checkbox onChange={handleChange} />} label="Have Check Book?" />}
           {credit && checked && <TextField
             required
@@ -580,15 +725,15 @@ const ViewShopItems = () => {
           }}
         >
           <Box sx={{ display: 'flex',flexDirection:isMobile&&"column", justifyContent: 'flex-end' }}>
-            <Grid container spacing={isMobile?0.5:2} >
-              <Grid item xs={isMobile?12:4}>
-                <Item style={{ color: "blue",fontSize:"20px" }}>TODAY'S TOTAL SALE = {totalSale} Brr</Item>
+            <Grid container spacing={isMobile ? 0.5 : 2} >
+              <Grid item xs={isMobile ? 12 : 4}>
+                <Item style={{ color: "blue", fontSize: "20px" }}>TODAY'S TOTAL SALE = {refetching ? <CircularProgress color="secondary" size={20} /> : totalSale + " Birr"} </Item>
               </Grid>
-              <Grid item xs={isMobile ? 12:4}>
-                <Item style={{ color: "red", fontSize: "20px" }}>TODAY'S TOTAL EXPENSE = {totalExpense} brr</Item>
+              <Grid item xs={isMobile ? 12 : 4}>
+                <Item style={{ color: "red", fontSize: "20px" }}>TODAY'S TOTAL EXPENSE = {refetching ? <CircularProgress color="secondary" size={20} /> : totalExpense + " Birr"}</Item>
               </Grid>
-              <Grid item xs={isMobile ? 12:3}>
-                <Item style={{ color: "yellow", fontSize: "20px" }}>NET INCOME = {totalSale-totalExpense} brr</Item>
+              <Grid item xs={isMobile ? 12 : 3}>
+                <Item style={{ color: "yellow", fontSize: "20px" }}>NET INCOME = {refetching ? <CircularProgress color="secondary" size={20} /> : totalSale - totalExpense + " Birr"}</Item>
               </Grid>
             </Grid>
             <Button
