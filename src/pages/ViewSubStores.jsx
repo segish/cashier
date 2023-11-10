@@ -144,7 +144,7 @@ const ViewSubStoreItems = () => {
         setIsSaled(false);
       })
     } else if (transactionType === 'partial_payment') {
-      Axios.post(`/Substore/holesall/${selectedrow._id}`, {
+      Axios.post(`/Substore/holesale/${selectedrow._id}`, {
         quantity: quantity,
         customerName: custName,
         paymentMethod: "halfpaid",

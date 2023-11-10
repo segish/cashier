@@ -1,7 +1,8 @@
-import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, Grid, IconButton, InputLabel, MenuItem, Paper, Select, TextField, useMediaQuery } from "@mui/material";
+import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, IconButton, InputLabel, MenuItem, Select, TextField, useMediaQuery } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../theme";
 import Header from "../components/Header";
+import StatCard from "../components/StatCard";
 import { useTheme } from "@mui/material";
 import Axios from 'axios';
 import { useEffect, useState } from "react";
@@ -26,13 +27,9 @@ const ViewShopItems = () => {
   document.title = "Shop items | STMS"
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  // dialog
   const [open, setOpen] = useState(false);
   const [openAlert, setOpenAlert] = useState(true);
   const [loading, setLoading] = useState(true);
-  //dialog
-
-  //input data
   const [custName, setCustName] = useState('');
   const [quantity, setQuantity] = useState('');
   const [price, setPrice] = useState('');
@@ -43,12 +40,10 @@ const ViewShopItems = () => {
   const [creditDate, setCreditDate] = useState('');
   const [expenseAmount, setExpenseAmount] = useState('');
   const [reason, setReason] = useState('');
-  const [totalSale, setTotalSale] = useState('');
-  const [totalExpense, setTotalExpense] = useState('');
   const [credit, setCredit] = useState(false);
   const [transfer, setTransfer] = useState(false);
   const [chequeNumber, setChequeNumber] = useState(null);
-  const [selectedRow, setSelectedRow] = useState(null); 
+  const [selectedRow, setSelectedRow] = useState(null);
   const [partialPayment, setPartialPayment] = useState(false);
   const [isPtransfer, setIsPtransfer] = useState(false);
   const [cashOrTransfer, setCashOrTransfer] = useState('');
@@ -64,13 +59,18 @@ const ViewShopItems = () => {
   const [checked, setChecked] = useState(false);
   const [refetching, setRefetching] = useState(true);
   const [expense, setExpense] = useState(false);
+  const [total, setTotal] = useState({
+    totalSale: 0,
+    totalSaleTransfer: 0,
+    totalSaleCredit: 0,
+    totalExpense: 0,
+  });
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   const handleChange = (event) => {
     setChecked(event.target.checked);
   };
 
-  //transaction type
   const handleTransactionType = (value) => {
     if (value === "transfer") {
       setTransfer(true);
@@ -104,7 +104,7 @@ const ViewShopItems = () => {
     setBankName('');
     setAccountNumber('');
   }
-  // popup related
+
   const handleClickOpen = (row) => {
     setSelectedRow(row);
     setOpen(true);
@@ -313,8 +313,7 @@ const ViewShopItems = () => {
   useEffect(() => {
     setRefetching(true);
     Axios.get('/expense/total').then((response) => {
-      setTotalExpense(response.data.totalExpense);
-      setTotalSale(response.data.totalSale)
+      setTotal(response.data);
       setRefetching(false);
     }).catch((error) => {
       if (error.response && error.response.data) {
@@ -384,7 +383,7 @@ const ViewShopItems = () => {
       width: isMobile && 120,
       flex: !isMobile && 1,
       cellClassName: "name-column--cell",
-      valueGetter: (params) => params.row.quantity - params.row.pendingSaleQuantity ,
+      valueGetter: (params) => params.row.quantity - params.row.pendingSaleQuantity,
     },
     {
       field: "sale",
@@ -395,19 +394,6 @@ const ViewShopItems = () => {
       },
     },
   ];
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    display:"flex",
-    alignItems:"center",
-    justifyContent:"center",
-    height:"50px",
-    marginLeft: "4px",
-    marginRight: "4px",
-    color: theme.palette.text.secondary,
-  }));
   return (
     <>
 
@@ -477,9 +463,6 @@ const ViewShopItems = () => {
           </Button>
         </DialogActions>
       </BootstrapDialog>
-
-
-
       <BootstrapDialog
         open={open}
         onClose={handleClose}
@@ -689,9 +672,6 @@ const ViewShopItems = () => {
         <Header
           title="SHOP ITEMS"
         />
-        <Message message={message} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='success' />
-        <Message message={errorMessage} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='error' />
-        {loading && <LinearProgress color="secondary" />}
         <Box
           margin={0}
           height="75vh"
@@ -724,27 +704,76 @@ const ViewShopItems = () => {
             },
           }}
         >
-          <Box sx={{ display: 'flex',flexDirection:isMobile&&"column", justifyContent: 'flex-end' }}>
-            <Grid container spacing={isMobile ? 0.5 : 2} >
-              <Grid item xs={isMobile ? 12 : 4}>
-                <Item style={{ color: "blue", fontSize: "20px" }}>TODAY'S TOTAL SALE = {refetching ? <CircularProgress color="secondary" size={20} /> : totalSale + " Birr"} </Item>
-              </Grid>
-              <Grid item xs={isMobile ? 12 : 4}>
-                <Item style={{ color: "red", fontSize: "20px" }}>TODAY'S TOTAL EXPENSE = {refetching ? <CircularProgress color="secondary" size={20} /> : totalExpense + " Birr"}</Item>
-              </Grid>
-              <Grid item xs={isMobile ? 12 : 3}>
-                <Item style={{ color: "yellow", fontSize: "20px" }}>NET INCOME = {refetching ? <CircularProgress color="secondary" size={20} /> : totalSale - totalExpense + " Birr"}</Item>
-              </Grid>
-            </Grid>
+          <Box
+            display="flex"
+            flexWrap="wrap"
+            gap="6px"
+            justifyContent="space-around"
+            fullWidth
+            marginBottom="5px"
+          >
+
+            <Box
+              gridColumn={{ xs: "span 12", sm: "span 3", }}
+              backgroundColor={colors.primary[500]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              width={isMobile?"100%":"fit"}
+
+            >
+              <StatCard
+                cash={total.totalSale}
+                transfer={total.totalSaleTransfer}
+                credit={total.totalSaleCredit}
+                lable={"TODAY'S SALE"}
+                refetching={refetching}
+              />
+            </Box>
+            <Box
+              gridColumn={{ xs: "span 12", sm: "span 3", }}
+              backgroundColor={colors.primary[500]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              width={isMobile?"100%":"fit"}
+
+            >
+              <StatCard
+                netSale={total.totalSale + total.totalSaleTransfer + total.totalSaleCredit}
+                netIncome={total.totalSale + total.totalSaleTransfer + total.totalSaleCredit - total.totalExpense}
+                netCash={total.totalSale - total.totalExpense}
+                lable={"TODAY'S NET"}
+                refetching={refetching}
+              />
+            </Box>
+            <Box
+              gridColumn={{ xs: "span 12", sm: "span 3", }}
+              backgroundColor={colors.primary[500]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              width={isMobile?"100%":"fit"}
+
+            >
+              <StatCard
+                totalExpense={total.totalExpense}
+                lable={"TODAY'S EXPENSE"}
+                refetching={refetching}
+              />
+            </Box>
             <Button
               variant="contained"
-              onClick={() => setExpense(true)} className="btn btn-primary mx-1 "
+              onClick={() => setExpense(true)}
               startIcon={<AddIcon />}
-              sx={{ marginTop: "4px", backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff', }}
+              sx={{ marginTop: "4px", border: 1, backgroundColor: theme.palette.mode === 'dark' ? '#1A2028' : '#fff', alignSelf: "flex-end" }}
             >
               New Expense
             </Button>
           </Box>
+          <Message message={message} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='success' />
+          <Message message={errorMessage} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='error' />
+          {loading && <LinearProgress color="secondary"/>}
           <DataGrid
             rows={shopeItems}
             columns={columns}

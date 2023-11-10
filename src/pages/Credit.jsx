@@ -48,7 +48,9 @@ const PendingShopItem = () => {
     };
     const handleApprove = (selectedrow) => {
         setIsApproved(true);
-        Axios.post(`/credits/approve/${selectedrow._id}`).then((response) => {
+        Axios.post(`/credits/approve/${selectedrow._id}`,{
+            isCreditAtPendingSale: selectedrow.isCreditAtPendingSale,
+        }).then((response) => {
             setRefetch(!refetch)
             setOpen(false);
             setIsApproved(false);

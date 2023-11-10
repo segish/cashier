@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Paper, TextField, useMediaQuery } from "@mui/material";
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField, useMediaQuery } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../theme";
 import Header from "../components/Header";
@@ -10,6 +10,7 @@ import Message from "../components/Message";
 import styled from "@emotion/styled";
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
+import StatCard from "../components/StatCard";
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
@@ -32,13 +33,17 @@ const History = () => {
     const isMobile = useMediaQuery('(max-width: 768px)');
     const [expenseAmount, setExpenseAmount] = useState('');
     const [reason, setReason] = useState('');
-    const [totalSale, setTotalSale] = useState('');
     const [isExpense, setIsExpense] = useState(false);
     const [expense, setExpense] = useState(false);
     const [message, setMessage] = useState('');
     const [refetch, setRefetch] = useState(false);
     const [refetching, setRefetching] = useState(true);
-    const [totalExpense, setTotalExpense] = useState('');
+    const [total, setTotal] = useState({
+        totalSale: 0,
+        totalSaleTransfer: 0,
+        totalSaleCredit: 0,
+        totalExpense: 0,
+    });
 
     const handleMoveClose = () => {
         setExpense(false);
@@ -91,8 +96,7 @@ const History = () => {
     useEffect(() => {
         setRefetching(true);
         Axios.get('/expense/total').then((response) => {
-            setTotalExpense(response.data.totalExpense);
-            setTotalSale(response.data.totalSale)
+            setTotal(response.data);
             setRefetching(false);
         }).catch((error) => {
             if (error.response && error.response.data) {
@@ -141,20 +145,6 @@ const History = () => {
             },
         },
     ];
-
-    const Item = styled(Paper)(({ theme }) => ({
-        backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-        ...theme.typography.body2,
-        padding: theme.spacing(1),
-        textAlign: 'center',
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "50px",
-        marginLeft: "4px",
-        marginRight: "4px",
-        color: theme.palette.text.secondary,
-    }));
 
     return (<>
         <BootstrapDialog
@@ -265,23 +255,69 @@ const History = () => {
                         color: `${colors.grey[100]} !important`,
                     },
                 }}
-            ><Box sx={{ display: 'flex', flexDirection: isMobile && "column", justifyContent: 'flex-end' }}>
-                    <Grid container spacing={isMobile ? 0.5 : 2} >
-                        <Grid item xs={isMobile ? 12 : 4}>
-                            <Item style={{ color: "blue", fontSize: "20px" }}>TODAY'S TOTAL SALE = {refetching ? <CircularProgress color="secondary" size={20} /> : totalSale + " Birr"} </Item>
-                        </Grid>
-                        <Grid item xs={isMobile ? 12 : 4}>
-                            <Item style={{ color: "red", fontSize: "20px" }}>TODAY'S TOTAL EXPENSE = {refetching ? <CircularProgress color="secondary" size={20} /> : totalExpense + " Birr"}</Item>
-                        </Grid>
-                        <Grid item xs={isMobile ? 12 : 3}>
-                            <Item style={{ color: "yellow", fontSize: "20px" }}>NET INCOME = {refetching ? <CircularProgress color="secondary" size={20} /> : totalSale - totalExpense + " Birr"}</Item>
-                        </Grid>
-                    </Grid>
+            ><Box
+                display="flex"
+                flexWrap="wrap"
+                gap="6px"
+                justifyContent="space-around"
+                fullWidth
+                marginBottom="5px"
+            >
+
+                    <Box
+                        gridColumn={{ xs: "span 12", sm: "span 3", }}
+                        backgroundColor={colors.primary[500]}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        width={isMobile ? "100%" : "fit"}
+
+                    >
+                        <StatCard
+                            cash={total.totalSale}
+                            transfer={total.totalSaleTransfer}
+                            credit={total.totalSaleCredit}
+                            lable={"TODAY'S SALE"}
+                            refetching={refetching}
+                        />
+                    </Box>
+                    <Box
+                        gridColumn={{ xs: "span 12", sm: "span 3", }}
+                        backgroundColor={colors.primary[500]}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        width={isMobile ? "100%" : "fit"}
+
+                    >
+                        <StatCard
+                            netSale={total.totalSale + total.totalSaleTransfer + total.totalSaleCredit}
+                            netIncome={total.totalSale + total.totalSaleTransfer + total.totalSaleCredit - total.totalExpense}
+                            netCash={total.totalSale - total.totalExpense}
+                            lable={"TODAY'S NET"}
+                            refetching={refetching}
+                        />
+                    </Box>
+                    <Box
+                        gridColumn={{ xs: "span 12", sm: "span 3", }}
+                        backgroundColor={colors.primary[500]}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        width={isMobile ? "100%" : "fit"}
+
+                    >
+                        <StatCard
+                            totalExpense={total.totalExpense}
+                            lable={"TODAY'S EXPENSE"}
+                            refetching={refetching}
+                        />
+                    </Box>
                     <Button
                         variant="contained"
-                        onClick={() => setExpense(true)} className="btn btn-primary mx-1 "
+                        onClick={() => setExpense(true)}
                         startIcon={<AddIcon />}
-                        sx={{ marginTop: "4px", backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff', }}
+                        sx={{ marginTop: "4px", border: 1, backgroundColor: theme.palette.mode === 'dark' ? '#1A2028' : '#fff', alignSelf: "flex-end" }}
                     >
                         New Expense
                     </Button>
