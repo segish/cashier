@@ -766,7 +766,7 @@ const ViewShopItems = () => {
               variant="contained"
               onClick={() => setExpense(true)}
               startIcon={<AddIcon />}
-              sx={{ marginTop: "4px", border: 1, backgroundColor: theme.palette.mode === 'dark' ? '#1A2028' : '#fff', alignSelf: "flex-end" }}
+              sx={{ marginTop: "4px", border: 1, backgroundColor: colors.primary[400], alignSelf: "flex-end" }}
             >
               New Expense
             </Button>

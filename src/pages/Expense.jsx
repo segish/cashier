@@ -221,9 +221,6 @@ const History = () => {
             <Header
                 title="EXPENSE PENDING"
             />
-            <Message message={message} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='success' />
-            <Message message={errorMessage} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='error' />
-            {loading && <LinearProgress color="secondary" />}
             <Box
                 margin={0}
                 height="75vh"
@@ -317,11 +314,14 @@ const History = () => {
                         variant="contained"
                         onClick={() => setExpense(true)}
                         startIcon={<AddIcon />}
-                        sx={{ marginTop: "4px", border: 1, backgroundColor: theme.palette.mode === 'dark' ? '#1A2028' : '#fff', alignSelf: "flex-end" }}
+                        sx={{ marginTop: "4px", border: 1, backgroundColor: colors.primary[400], alignSelf: "flex-end" }}
                     >
                         New Expense
                     </Button>
                 </Box>
+                <Message message={message} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='success' />
+                <Message message={errorMessage} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='error' />
+                {loading && <LinearProgress color="secondary" />}
                 <DataGrid
                     rows={historyList}
                     columns={columns}

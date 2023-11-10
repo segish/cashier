@@ -7,7 +7,7 @@ const StatCard = ({ cash, transfer, credit, lable, totalExpense, netSale, netInc
   const colors = tokens(theme.palette.mode);
 
   return (
-    <Box width="100%" height="100%" bgcolor="#1A2028" p={2} border={1} borderRadius={1} display="flex" alignItems="center" justifyContent="center">
+    <Box width="100%" height="100%" bgcolor={colors.primary[400]} p={1} px={8} border={1} borderRadius={1} display="flex" alignItems="center" justifyContent="center">
       <Box display="flex" justifyContent="center">
         <Box>
           <Typography
