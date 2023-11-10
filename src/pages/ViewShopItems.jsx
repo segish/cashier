@@ -371,7 +371,6 @@ const ViewShopItems = () => {
       cellClassName: "name-column--cell",
     },
     {
-      field: "expireDate",
       headerName: "Expire Date",
       width: isMobile && 120,
       flex: !isMobile && 1,
@@ -719,7 +718,7 @@ const ViewShopItems = () => {
               display="flex"
               alignItems="center"
               justifyContent="center"
-              width={isMobile?"100%":"fit"}
+              width={isMobile ? "100%" : "fit"}
 
             >
               <StatCard
@@ -736,7 +735,7 @@ const ViewShopItems = () => {
               display="flex"
               alignItems="center"
               justifyContent="center"
-              width={isMobile?"100%":"fit"}
+              width={isMobile ? "100%" : "fit"}
 
             >
               <StatCard
@@ -753,7 +752,7 @@ const ViewShopItems = () => {
               display="flex"
               alignItems="center"
               justifyContent="center"
-              width={isMobile?"100%":"fit"}
+              width={isMobile ? "100%" : "fit"}
 
             >
               <StatCard
@@ -773,7 +772,7 @@ const ViewShopItems = () => {
           </Box>
           <Message message={message} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='success' />
           <Message message={errorMessage} openAlert={openAlert} setOpenAlert={setOpenAlert} severity='error' />
-          {loading && <LinearProgress color="secondary"/>}
+          {loading && <LinearProgress color="secondary" />}
           <DataGrid
             rows={shopeItems}
             columns={columns}

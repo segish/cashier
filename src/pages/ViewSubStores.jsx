@@ -369,7 +369,6 @@ const ViewSubStoreItems = () => {
       cellClassName: "name-column--cell",
     },
     {
-      field: "expireDate",
       headerName: "Expire Date",
       width: isMobile && 120,
       flex: !isMobile && 1,
