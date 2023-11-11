@@ -104,12 +104,6 @@ const PendingShopItem = () => {
       cellClassName: "name-column--cell",
     },
     {
-      headerName: "Expire Date",
-      width: isMobile && 120,
-      flex: !isMobile && 1,
-      cellClassName: "name-column--cell",
-    },
-    {
       field: "quantity",
       headerName: "Quantity",
       width: isMobile && 120,
