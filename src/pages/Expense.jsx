@@ -117,7 +117,7 @@ const History = () => {
             field: "reason",
             headerName: "Expense Reason",
             width: isMobile && 200,
-            flex: !isMobile && 2,
+            flex: !isMobile && 3,
             cellClassName: "name-column--cell",
         },
         {
