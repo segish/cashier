@@ -357,13 +357,6 @@ const ViewShopItems = () => {
       cellClassName: "name-column--cell",
     },
     {
-      field: "type",
-      headerName: "Item Type",
-      width: isMobile && 120,
-      flex: !isMobile && 1,
-      cellClassName: "name-column--cell",
-    },
-    {
       field: "specification",
       headerName: "Item Specification",
       width: isMobile && 120,
