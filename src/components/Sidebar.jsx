@@ -70,7 +70,7 @@ const Itemtest = ({ title, to, icon, selected, setSelected, subMenu, isCollapsed
       </MenuItem>
       {subMenu && (
         <Collapse in={isSubMenuOpen}>
-          <div onClick={() => handleIsMobile()} style={{ display: "flex", marginLeft: '20px', backgroundColor: colors.primary[500], justifyContent: 'space-between' }}>{subMenu}</div>
+          <div onClick={() => handleIsMobile()} style={{ display: "flex", marginLeft: '20px', border: '1px solid #9e9e9e', boxSizing: 'border-box', marginRight: '5px',borderRadius:4, backgroundColor: colors.blueAccent[800],color:"white" , justifyContent: 'space-between' }}>{subMenu}</div>
         </Collapse>
       )}
     </>
@@ -153,10 +153,10 @@ const Sidebar = () => {
           padding: "5px 35px 5px 20px !important",
         },
         "& .pro-inner-item:hover": {
-          color: "#868dfb !important",
+          color: colors.greenAccent[400] + "!important",
         },
         "& .pro-menu-item.active": {
-          color: "#6870fa !important",
+          color: colors.greenAccent[500]+"!important",
         },
         height: '100vh',
       }}
