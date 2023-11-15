@@ -504,7 +504,7 @@ const ViewShopItems = () => {
         <DialogTitle
           id="costomized-dialog-title"
         >
-          Sale Shop Items
+          Sale of {selectedRow && selectedRow.name} from Shop
         </DialogTitle>
         <IconButton
           aria-label="close"

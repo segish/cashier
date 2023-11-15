@@ -442,7 +442,7 @@ const ViewSubStoreItems = () => {
         <DialogTitle
           id="customized-dialog-title"
         >
-          Moving Items
+          Moving {selectedMoveRow && selectedMoveRow.name}
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -513,7 +513,7 @@ const ViewSubStoreItems = () => {
         <DialogTitle
           id="customized-dialog-title"
         >
-          Sale Sub Store Items
+          Sale of {selectedRow && selectedRow.name}  from Sub Store
         </DialogTitle>
         <IconButton
           aria-label="close"
