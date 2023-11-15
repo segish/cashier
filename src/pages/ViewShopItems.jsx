@@ -45,6 +45,7 @@ const ViewShopItems = () => {
   const [chequeNumber, setChequeNumber] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const [partialPayment, setPartialPayment] = useState(false);
+  const [cashTransfer, setCashTransfer] = useState(false);
   const [isPtransfer, setIsPtransfer] = useState(false);
   const [cashOrTransfer, setCashOrTransfer] = useState('');
   const [paidAmount, setPaidAmount] = useState('');
@@ -75,26 +76,37 @@ const ViewShopItems = () => {
     if (value === "transfer") {
       setTransfer(true);
       setCredit(false);
-      setPartialPayment(false);
       setIsPtransfer(false);
+      setCashTransfer(false);
+      setPartialPayment(false);
       setTransactionType(value);
     } else if (value === 'credit') {
       setCredit(true);
+      setCashTransfer(false);
       setTransfer(false);
       setPartialPayment(false);
       setIsPtransfer(false);
       setTransactionType(value);
     } else if (value === 'partial_payment') {
       setPartialPayment(true);
+      setCashTransfer(false);
+      setCredit(false);
+      setTransfer(false);
+      setTransactionType(value);
+    } else if (value === 'cash/transfer') {
+      setCashTransfer(true);
+      setPartialPayment(false);
+      setIsPtransfer(false);
       setCredit(false);
       setTransfer(false);
       setTransactionType(value);
     } else {
-      setTransactionType(value);
+      setCashTransfer(false);
       setTransfer(false);
       setPartialPayment(false);
       setIsPtransfer(false);
       setCredit(false);
+      setTransactionType(value);
     }
     setCashOrTransfer('');
     setCreditDate('');
@@ -122,6 +134,7 @@ const ViewShopItems = () => {
     setCashOrTransfer('');
     setPaidAmount('');
     setPartialPayment(false);
+    setCashTransfer(false);
     setIsPtransfer(false);
     setIsSaled(false);
     setTransfer(false);
@@ -153,6 +166,7 @@ const ViewShopItems = () => {
         setPrice('');
         setQuantity('');
         setTransfer(false);
+        setCashTransfer(true);
         setCredit(false);
         setTransactionType('');
         setOpenAlert(true)
@@ -182,6 +196,39 @@ const ViewShopItems = () => {
         setPrice('');
         setQuantity('');
         setTransfer(false);
+        setCashTransfer(true);
+        setCredit(false);
+        setTransactionType('');
+        setOpenAlert(true)
+        setErrorMessage('');
+        setReload(!reload);
+      }).catch((error) => {
+        if (error.response && error.response.data) {
+          setOpenAlert(true)
+          setErrorMessage(error.response.data);
+        } else {
+          setOpenAlert(true)
+          setErrorMessage("An error occurred");
+        }
+        setIsSaled(false);
+      })
+    } else if (transactionType === 'cash/transfer') {
+      Axios.post(`/Shop/transaction/${selectedrow._id}`, {
+        quantity: quantity,
+        customerName: custName,
+        paymentMethod: "cash/transfer",
+        amount: price,
+        halfPayMethod: accountNumber,
+        paidamount: paidAmount
+      }).then((response) => {
+        setOpen(false);
+        setIsSaled(false);
+        setMessage("Sale Adedded to pending successfully waiting to be approved by the Admin!! ");
+        setCustName('');
+        setPrice('');
+        setQuantity('');
+        setTransfer(false);
+        setCashTransfer(true);
         setCredit(false);
         setTransactionType('');
         setOpenAlert(true)
@@ -210,7 +257,7 @@ const ViewShopItems = () => {
         paidamount: paidAmount
       }).then((response) => {
         setOpenAlert(true);
-        setMessage(`${quantity}  ${selectedrow.name} solled with both ${cashOrTransfer} and credit successfully!!`);
+        setMessage(`${quantity}  ${selectedrow.name} added to pending successfully waiting to be approved by admin!!`);
         setOpen(false);
         setCustName('');
         setPrice('');
@@ -494,7 +541,7 @@ const ViewShopItems = () => {
           />
           <TextField
             required
-            label="Price"
+            label={`Unit Price (Price of 1 ${selectedRow && selectedRow.name}) `}
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             fullWidth
@@ -515,7 +562,8 @@ const ViewShopItems = () => {
               <MenuItem value="transfer">Transfer</MenuItem>
               <MenuItem value="cash">Cash</MenuItem>
               <MenuItem value="credit">Credit</MenuItem>
-              <MenuItem value="partial_payment">PartialPayment</MenuItem>
+              <MenuItem value="partial_payment">PartialPayment with credit</MenuItem>
+              <MenuItem value="cash/transfer">PartialPayment with cash and transfer</MenuItem>
             </Select>
           </FormControl>
           {transfer &&
@@ -537,6 +585,26 @@ const ViewShopItems = () => {
             fullWidth
             margin="normal"
           />}
+          {cashTransfer &&
+            <TextField
+              required
+              label="Paid Amount in cash"
+              type="text"
+              value={paidAmount}
+              onChange={(e) => setPaidAmount(e.target.value)}
+              fullWidth
+              margin="normal"
+            />
+          }
+          {cashTransfer &&
+            <TextField
+              required
+              label="Account Number"
+              value={accountNumber}
+              onChange={(e) => setAccountNumber(e.target.value)}
+              fullWidth
+              margin="normal"
+            />}
           {partialPayment && <TextField
             required
             label="Paid Amount"

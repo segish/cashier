@@ -56,6 +56,7 @@ const ViewSubStoreItems = () => {
   const [isMoved, setIsMoved] = useState(false);
   const [reload, setReload] = useState(false);
   const [isPtransfer, setIsPtransfer] = useState(false);
+  const [cashTransfer, setCashTransfer] = useState(false);
   const [partialPayment, setPartialPayment] = useState(false);
   const [paidAmount, setPaidAmount] = useState('');
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -143,6 +144,38 @@ const ViewSubStoreItems = () => {
         }
         setIsSaled(false);
       })
+    } else if (transactionType === 'cash/transfer') {
+      Axios.post(`/Shop/transaction/${selectedrow._id}`, {
+        quantity: quantity,
+        customerName: custName,
+        paymentMethod: "cash/transfer",
+        amount: price,
+        halfPayMethod: accountNumber,
+        paidamount: paidAmount
+      }).then((response) => {
+        setOpen(false);
+        setIsSaled(false);
+        setMessage("Sale Adedded to pending successfully waiting to be approved by the Admin!! ");
+        setCustName('');
+        setPrice('');
+        setQuantity('');
+        setTransfer(false);
+        setCashTransfer(true);
+        setCredit(false);
+        setTransactionType('');
+        setOpenAlert(true)
+        setErrorMessage('');
+        setReload(!reload);
+      }).catch((error) => {
+        if (error.response && error.response.data) {
+          setOpenAlert(true)
+          setErrorMessage(error.response.data);
+        } else {
+          setOpenAlert(true)
+          setErrorMessage("An error occurred");
+        }
+        setIsSaled(false);
+      })
     } else if (transactionType === 'partial_payment') {
       Axios.post(`/Substore/holesale/${selectedrow._id}`, {
         quantity: quantity,
@@ -216,21 +249,32 @@ const ViewSubStoreItems = () => {
       setTransfer(true);
       setPartialPayment(false);
       setIsPtransfer(false);
+      setCashTransfer(false);
       setCredit(false);
       setTransactionType(value);
     } else if (value === 'credit') {
       setCredit(true);
       setTransfer(false);
+      setCashTransfer(false);
       setPartialPayment(false);
       setIsPtransfer(false);
       setTransactionType(value);
     } else if (value === 'partial_payment') {
       setPartialPayment(true);
       setCredit(false);
+      setCashTransfer(false);
+      setTransfer(false);
+      setTransactionType(value);
+    } else if (value === 'cash/transfer') {
+      setCashTransfer(true);
+      setPartialPayment(false);
+      setIsPtransfer(false);
+      setCredit(false);
       setTransfer(false);
       setTransactionType(value);
     } else {
       setTransactionType(value);
+      setCashTransfer(false);
       setTransfer(false);
       setPartialPayment(false);
       setIsPtransfer(false);
@@ -258,6 +302,7 @@ const ViewSubStoreItems = () => {
     setCashOrTransfer('');
     setPaidAmount('');
     setPartialPayment(false);
+    setCashTransfer(false);
     setIsPtransfer(false);
     setTransfer(false);
     setCredit(false);
@@ -526,7 +571,8 @@ const ViewSubStoreItems = () => {
               <MenuItem value="transfer">Transfer</MenuItem>
               <MenuItem value="cash">Cash</MenuItem>
               <MenuItem value="credit">Credit</MenuItem>
-              <MenuItem value="partial_payment">PartialPayment</MenuItem>
+              <MenuItem value="partial_payment">PartialPayment with credit</MenuItem>
+              <MenuItem value="cash/transfer">PartialPayment with cash and transfer</MenuItem>
             </Select>
           </FormControl>
           {transfer && <TextField
@@ -546,6 +592,26 @@ const ViewSubStoreItems = () => {
             fullWidth
             margin="normal"
           />}
+          {cashTransfer &&
+            <TextField
+              required
+              label="Paid Amount in cash"
+              type="text"
+              value={paidAmount}
+              onChange={(e) => setPaidAmount(e.target.value)}
+              fullWidth
+              margin="normal"
+            />
+          }
+          {cashTransfer &&
+            <TextField
+              required
+              label="Account Number"
+              value={accountNumber}
+              onChange={(e) => setAccountNumber(e.target.value)}
+              fullWidth
+              margin="normal"
+            />}
           {partialPayment && <TextField
             required
             label="Paid Amount"
