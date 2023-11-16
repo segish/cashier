@@ -91,7 +91,7 @@ const ViewSubStoreItems = () => {
         cheque: chequeNumber,
       }).then((response) => {
         setOpenAlert(true);
-        setMessage("Sale Adedded to pending successfully waiting to be approved by Admin!! ");
+        setMessage(`${quantity}  ${selectedrow.name} Adedded to pending successfully waiting to be approved by Admin!! `);
         setIsSaled(false);
         setOpen(false);
         setCustName('');
@@ -124,7 +124,7 @@ const ViewSubStoreItems = () => {
         setOpen(false);
         setIsSaled(false);
         setOpenAlert(true);
-        setMessage("Sale Adedded to pending successfully waiting to be approved by Admin!!");
+        setMessage(`${quantity}  ${selectedrow.name} Adedded to pending successfully waiting to be approved by Admin!!`);
         setCustName('');
         setPrice('');
         setQuantity('');
@@ -155,7 +155,7 @@ const ViewSubStoreItems = () => {
       }).then((response) => {
         setOpen(false);
         setIsSaled(false);
-        setMessage("Sale Adedded to pending successfully waiting to be approved by the Admin!! ");
+        setMessage(`${quantity}  ${selectedrow.name} Adedded to pending successfully waiting to be approved by the Admin!! `);
         setCustName('');
         setPrice('');
         setQuantity('');
@@ -189,7 +189,7 @@ const ViewSubStoreItems = () => {
         paidamount: paidAmount
       }).then((response) => {
         setOpenAlert(true);
-        setMessage(`${quantity}  ${selectedrow.name} solled with both ${cashOrTransfer} and credit successfully!!`);
+        setMessage(`${quantity}  ${selectedrow.name} Added to pending successfully waiting to be approved by Admin!!`);
         setOpen(false);
         setCustName('');
         setPrice('');
@@ -222,7 +222,7 @@ const ViewSubStoreItems = () => {
         setOpen(false);
         setIsSaled(false);
         setOpenAlert(true)
-        setMessage("Sale Adedded to pending successfully waiting to be approved by Admin!!");
+        setMessage(`${quantity}  ${selectedrow.name} Added to pending successfully waiting to be approved by Admin!!`);
         setCustName('');
         setPrice('');
         setQuantity('');

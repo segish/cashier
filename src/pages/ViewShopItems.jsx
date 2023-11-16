@@ -159,7 +159,7 @@ const ViewShopItems = () => {
         paymentDate: creditDate,
         cheque: chequeNumber,
       }).then((response) => {
-        setMessage(`${quantity}  ${selectedrow.name} Sale Adedded to pending successfully waiting to be approved by Admin!!`);
+        setMessage(`${quantity}  ${selectedrow.name} Added to pending successfully waiting to be approved by Admin!!`);
         setIsSaled(false);
         setOpen(false);
         setCustName('');
@@ -191,7 +191,7 @@ const ViewShopItems = () => {
       }).then((response) => {
         setOpen(false);
         setIsSaled(false);
-        setMessage("Sale Adedded to pending successfully waiting to be approved by the Admin!! ");
+        setMessage(`${quantity}  ${selectedrow.name} Added to pending successfully waiting to be approved by the Admin!! `);
         setCustName('');
         setPrice('');
         setQuantity('');
@@ -223,7 +223,7 @@ const ViewShopItems = () => {
       }).then((response) => {
         setOpen(false);
         setIsSaled(false);
-        setMessage("Sale Adedded to pending successfully waiting to be approved by the Admin!! ");
+        setMessage(`${quantity}  ${selectedrow.name} Added to pending successfully waiting to be approved by the Admin!! `);
         setCustName('');
         setPrice('');
         setQuantity('');
@@ -257,7 +257,7 @@ const ViewShopItems = () => {
         paidamount: paidAmount
       }).then((response) => {
         setOpenAlert(true);
-        setMessage(`${quantity}  ${selectedrow.name} added to pending successfully waiting to be approved by admin!!`);
+        setMessage(`${quantity}  ${selectedrow.name} Added to pending successfully waiting to be approved by admin!!`);
         setOpen(false);
         setCustName('');
         setPrice('');
@@ -288,7 +288,7 @@ const ViewShopItems = () => {
       }).then((response) => {
         setOpen(false);
         setIsSaled(false);
-        setMessage(`${quantity}  ${selectedrow.name} Sale Adedded to pending successfully waiting to be approved by the Admin!! `);
+        setMessage(`${quantity}  ${selectedrow.name} Added to pending successfully waiting to be approved by the Admin!! `);
         setCustName('');
         setPrice('');
         setQuantity('');
