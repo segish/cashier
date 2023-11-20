@@ -95,7 +95,7 @@ const History = () => {
 
     useEffect(() => {
         setRefetching(true);
-        Axios.get('/expense/total').then((response) => {
+        Axios.post('/expense/total').then((response) => {
             setTotal(response.data);
             setRefetching(false);
         }).catch((error) => {

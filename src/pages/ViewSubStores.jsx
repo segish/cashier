@@ -11,6 +11,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import { styled } from '@mui/material/styles';
 import CircularProgress from "@mui/material/CircularProgress";
 import Message from "../components/Message";
+import StatCard from "../components/StatCard";
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
     padding: theme.spacing(2),
@@ -58,8 +59,15 @@ const ViewSubStoreItems = () => {
   const [isPtransfer, setIsPtransfer] = useState(false);
   const [cashTransfer, setCashTransfer] = useState(false);
   const [partialPayment, setPartialPayment] = useState(false);
+  const [refetching, setRefetching] = useState(true);
   const [paidAmount, setPaidAmount] = useState('');
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const [total, setTotal] = useState({
+    totalSale: 0,
+    totalSaleTransfer: 0,
+    totalSaleCredit: 0,
+    totalExpense: 0,
+  });
 
   const handleChange = (event) => {
     setChecked(event.target.checked)
@@ -91,7 +99,7 @@ const ViewSubStoreItems = () => {
         cheque: chequeNumber,
       }).then((response) => {
         setOpenAlert(true);
-        setMessage(`${quantity}  ${selectedrow.name} Adedded to pending successfully waiting to be approved by Admin!! `);
+        setMessage(`${quantity}  ${selectedrow.name} Added to pending successfully waiting to be approved by Admin!! `);
         setIsSaled(false);
         setOpen(false);
         setCustName('');
@@ -124,7 +132,7 @@ const ViewSubStoreItems = () => {
         setOpen(false);
         setIsSaled(false);
         setOpenAlert(true);
-        setMessage(`${quantity}  ${selectedrow.name} Adedded to pending successfully waiting to be approved by Admin!!`);
+        setMessage(`${quantity}  ${selectedrow.name} Added to pending successfully waiting to be approved by Admin!!`);
         setCustName('');
         setPrice('');
         setQuantity('');
@@ -145,7 +153,7 @@ const ViewSubStoreItems = () => {
         setIsSaled(false);
       })
     } else if (transactionType === 'cash/transfer') {
-      Axios.post(`/Shop/transaction/${selectedrow._id}`, {
+      Axios.post(`/Substore/holesale/${selectedrow._id}`, {
         quantity: quantity,
         customerName: custName,
         paymentMethod: "cash/transfer",
@@ -155,7 +163,7 @@ const ViewSubStoreItems = () => {
       }).then((response) => {
         setOpen(false);
         setIsSaled(false);
-        setMessage(`${quantity}  ${selectedrow.name} Adedded to pending successfully waiting to be approved by the Admin!! `);
+        setMessage(`${quantity}  ${selectedrow.name} Added to pending successfully waiting to be approved by the Admin!! `);
         setCustName('');
         setPrice('');
         setQuantity('');
@@ -380,6 +388,25 @@ const ViewSubStoreItems = () => {
     })
   }, [reload]);
 
+  useEffect(() => {
+    setRefetching(true);
+    Axios.post('/expense/total',{
+      warehouseName:"substore"
+    }).then((response) => {
+      setTotal(response.data);
+      setRefetching(false);
+    }).catch((error) => {
+      if (error.response && error.response.data) {
+        setOpenAlert(true)
+        setErrorMessage(error.response.data);
+      } else {
+        setOpenAlert(true)
+        setErrorMessage("An error occurred");
+      }
+      setRefetching(false);
+      setLoading(false);
+    })
+  }, [reload]);
 
   const getRowId = (row) => {
     return row._id;
@@ -768,6 +795,65 @@ const ViewSubStoreItems = () => {
             },
           }}
         >
+          <Box
+            display="flex"
+            flexWrap="wrap"
+            gap="6px"
+            justifyContent="space-around"
+            fullWidth
+            marginBottom="5px"
+          >
+
+            <Box
+              gridColumn={{ xs: "span 12", sm: "span 3", }}
+              backgroundColor={colors.primary[500]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              width={isMobile ? "100%" : "fit"}
+
+            >
+              <StatCard
+                cash={total.totalSale}
+                transfer={total.totalSaleTransfer}
+                credit={total.totalSaleCredit}
+                lable={"TODAY'S SALE"}
+                refetching={refetching}
+              />
+            </Box>
+            <Box
+              gridColumn={{ xs: "span 12", sm: "span 3", }}
+              backgroundColor={colors.primary[500]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              width={isMobile ? "100%" : "fit"}
+
+            >
+              <StatCard
+                netSale={total.totalSale + total.totalSaleTransfer + total.totalSaleCredit}
+                netIncome={total.totalSale + total.totalSaleTransfer + total.totalSaleCredit - total.totalExpense}
+                netCash={total.totalSale - total.totalExpense}
+                lable={"TODAY'S NET"}
+                refetching={refetching}
+              />
+            </Box>
+            <Box
+              gridColumn={{ xs: "span 12", sm: "span 3", }}
+              backgroundColor={colors.primary[500]}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              width={isMobile ? "100%" : "fit"}
+
+            >
+              <StatCard
+                totalExpense={total.totalExpense}
+                lable={"TODAY'S EXPENSE"}
+                refetching={refetching}
+              />
+            </Box>
+          </Box>
           <DataGrid
             rows={subStoreItems}
             columns={columns}
