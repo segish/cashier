@@ -59,13 +59,6 @@ const History = () => {
       cellClassName: "name-column--cell",
     },
     {
-      field: "from",
-      headerName: "From",
-      width: isMobile && 120,
-      flex: !isMobile && 1,
-      cellClassName: "name-column--cell",
-    },
-    {
       field: "to",
       headerName: "To",
       width: isMobile && 120,
@@ -75,6 +68,13 @@ const History = () => {
     {
       field: "quantity",
       headerName: "Quantity",
+      width: isMobile && 120,
+      flex: !isMobile && 1,
+      cellClassName: "name-column--cell",
+    },
+    {
+      field: "amount",
+      headerName: "Total Price",
       width: isMobile && 120,
       flex: !isMobile && 1,
       cellClassName: "name-column--cell",
