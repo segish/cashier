@@ -123,6 +123,23 @@ const PendingShopItem = () => {
       flex: !isMobile && 1,
       cellClassName: "name-column--cell",
     },
+    {
+      field: "createdAt",
+      headerName: "Date",
+      width: isMobile && 120,
+      flex: !isMobile && 1,
+      cellClassName: "name-column--cell",
+      valueGetter: (params) => {
+        const createdAt = params.row.createdAt;
+        const date = new Date(createdAt);
+        const formattedDate = date.toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+        return formattedDate;
+      },
+    },
 
     {
       field: "delete",
