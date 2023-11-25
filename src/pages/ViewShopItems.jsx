@@ -37,7 +37,6 @@ const ViewShopItems = () => {
   const [accountNumber, setAccountNumber] = useState('');
   const [bankName, setBankName] = useState('');
   const [phone, setPhone] = useState('');
-  const [creditDate, setCreditDate] = useState('');
   const [expenseAmount, setExpenseAmount] = useState('');
   const [reason, setReason] = useState('');
   const [credit, setCredit] = useState(false);
@@ -109,7 +108,6 @@ const ViewShopItems = () => {
       setTransactionType(value);
     }
     setCashOrTransfer('');
-    setCreditDate('');
     setPaidAmount('');
     setPhone('');
     setChequeNumber(null);
@@ -156,7 +154,6 @@ const ViewShopItems = () => {
         paymentMethod: transactionType,
         amount: price,
         phone: phone,
-        paymentDate: creditDate,
         cheque: chequeNumber,
       }).then((response) => {
         setMessage(`${quantity}  ${selectedrow.name} Added to pending successfully waiting to be approved by Admin!!`);
@@ -251,7 +248,6 @@ const ViewShopItems = () => {
         paymentMethod: "halfpaid",
         amount: price,
         phone: phone,
-        paymentDate: creditDate,
         cheque: chequeNumber,
         halfPayMethod: cash ? cashOrTransfer : `${cashOrTransfer}(Bank N: ${bankName}, Acc No: ${accountNumber})`,
         paidamount: paidAmount
@@ -668,19 +664,6 @@ const ViewShopItems = () => {
             margin="normal"
             type="number"
           />}
-          {
-            partialPayment && <TextField
-              required
-              label="Payment Date"
-              type="date"
-              value={creditDate}
-              onChange={(e) => setCreditDate(e.target.value)}
-              fullWidth
-              margin="normal"
-              InputLabelProps={{ shrink: true }}
-              InputProps={{ inputProps: { min: "yyyy-mm-dd" } }}
-            />
-          }
           {credit && <FormControlLabel required control={<Checkbox onChange={handleChange} />} label="Have Check Book?" />}
           {credit && checked && <TextField
             required
@@ -699,19 +682,6 @@ const ViewShopItems = () => {
             fullWidth
             margin="normal"
           />}
-          {
-            credit && <TextField
-              required
-              label="Payment Date"
-              type="date"
-              value={creditDate}
-              onChange={(e) => setCreditDate(e.target.value)}
-              fullWidth
-              margin="normal"
-              InputLabelProps={{ shrink: true }}
-              InputProps={{ inputProps: { min: "yyyy-mm-dd" } }}
-            />
-          }
         </DialogContent>
         <DialogActions>
           <Button style={{ color: 'white' }} onClick={() => handleSale(selectedRow)} disabled={isSaled}>

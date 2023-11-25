@@ -127,18 +127,28 @@ const PendingShopItem = () => {
             cellClassName: "name-column--cell",
         },
         {
-            field: "paymentDate",
-            headerName: "Payment Deadline",
-            width: isMobile && 120,
-            flex: !isMobile && 1,
-            cellClassName: "name-column--cell",
-        },
-        {
             field: "cheque",
             headerName: "cheque number",
             width: isMobile && 120,
             flex: !isMobile && 1,
             cellClassName: "name-column--cell",
+        },
+        {
+            field: "creditedDate",
+            headerName: "Credited Date",
+            width: isMobile && 120,
+            flex: !isMobile && 2,
+            cellClassName: "name-column--cell",
+            valueGetter: (params) => {
+                const creditedDate = params.row.creditedDate;
+                const date = new Date(creditedDate);
+                const formattedDate = date.toLocaleDateString(undefined, {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                });
+                return formattedDate;
+            },
         },
         {
             field: "approve",

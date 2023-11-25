@@ -43,7 +43,6 @@ const ViewSubStoreItems = () => {
   const [accountNumber, setAccountNumber] = useState('');
   const [bankName, setBankName] = useState('');
   const [phone, setPhone] = useState('');
-  const [creditDate, setCreditDate] = useState('');
   const [credit, setCredit] = useState(false);
   const [transfer, setTransfer] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -95,7 +94,6 @@ const ViewSubStoreItems = () => {
         paymentMethod: transactionType,
         amount: price,
         phone: phone,
-        paymentDate: creditDate,
         cheque: chequeNumber,
       }).then((response) => {
         setOpenAlert(true);
@@ -191,7 +189,6 @@ const ViewSubStoreItems = () => {
         paymentMethod: "halfpaid",
         amount: price,
         phone: phone,
-        paymentDate: creditDate,
         cheque: chequeNumber,
         halfPayMethod: cash ? cashOrTransfer : `${cashOrTransfer}(Bank N: ${bankName}, Acc No: ${accountNumber})`,
         paidamount: paidAmount
@@ -289,7 +286,6 @@ const ViewSubStoreItems = () => {
       setCredit(false);
     }
     setCashOrTransfer('');
-    setCreditDate('');
     setPaidAmount('');
     setPhone('');
     setChequeNumber(null);
@@ -702,19 +698,6 @@ const ViewSubStoreItems = () => {
             margin="normal"
             type="number"
           />}
-          {
-            partialPayment && <TextField
-              required
-              label="Payment Date"
-              type="date"
-              value={creditDate}
-              onChange={(e) => setCreditDate(e.target.value)}
-              fullWidth
-              margin="normal"
-              InputLabelProps={{ shrink: true }}
-              InputProps={{ inputProps: { min: "yyyy-mm-dd" } }}
-            />
-          }
           {credit && <FormControlLabel required control={<Checkbox onChange={handleChange} />} label="Have Cheque Book?" />}
           {credit && checked && <TextField
             required
@@ -733,19 +716,6 @@ const ViewSubStoreItems = () => {
             fullWidth
             margin="normal"
           />}
-          {
-            credit && <TextField
-              required
-              label="Payment Date"
-              type="date"
-              value={creditDate}
-              onChange={(e) => setCreditDate(e.target.value)}
-              fullWidth
-              margin="normal"
-              InputLabelProps={{ shrink: true }}
-              InputProps={{ inputProps: { min: "yyyy-mm-dd" } }}
-            />
-          }
         </DialogContent>
         <DialogActions dividers>
           <Button style={{ color: 'white' }} onClick={() => handleSale(selectedRow)} disabled={isSaled}>
